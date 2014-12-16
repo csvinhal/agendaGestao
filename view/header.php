@@ -92,7 +92,7 @@ sec_session_start();
                     echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Agenda<span class='caret'></span></a>";
                     echo "<ul class='dropdown-menu' role='menu'>";
                         echo "<li><a href='criar_alocacao.php'>Cadastrar Alocação</a></li>";
-                        echo "<li><a href='view_alocacao.php'>Visualizar Agenda</a></li>";
+                        echo "<li><a href='view_agendaGeral.php'>Visualizar Agenda</a></li>";
                     echo "</ul>";
                   echo "</li>";
                 echo "</ul>";

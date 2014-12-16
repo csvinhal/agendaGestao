@@ -17,7 +17,7 @@ echo "</div>";
 ?>
 
 
-<!-- HTML form for creating a product -->
+<!-- HTML form para cadastrar Usuario -->
 <form action='../controller/controleUsuario.php?operacao=salvar' method='post'>
  
     <table class='table table-hover table-responsive table-bordered'>

@@ -15,6 +15,7 @@
 
     include_once '../config/database.class.php';
     include_once 'Alocacao.class.php';
+
     
 class alocacaoDAO {
     
@@ -67,6 +68,44 @@ class alocacaoDAO {
         $stmt->execute();
         
         return $stmt;
+    }
+    
+    function searchMorning($dataAlocacao, $param){
+        $stmt = $this->conn->prepare("SELECT * FROM alocacao 
+                                        WHERE idColaborador = ?
+                                        AND dataAlocacao = ?
+                                        AND horaInicio = '08:00' 
+                                        AND horaFim = '12:00'");
+        $stmt->bindValue(1, $param);
+        $stmt->bindValue(2, $dataAlocacao);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0){
+            return $stmt;
+            /*$row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $alocacao->idCliente = $row['idCliente'];*/
+        }else{
+            return false;
+        }
+    }
+    
+    function searchAfternoon($dataAlocacao, $param){
+        $stmt = $this->conn->prepare("SELECT * FROM alocacao 
+                                        WHERE idColaborador = ?
+                                        AND dataAlocacao = ?
+                                        AND horaInicio = '13:30' 
+                                        AND horaFim = '18:00'");
+        $stmt->bindValue(1, $param);
+        $stmt->bindValue(2, $dataAlocacao);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0){
+            return $stmt;
+            /*$row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $alocacao->idCliente = $row['idCliente'];*/
+        }else{
+            return false;
+        }
     }
     
     function searchCol(){

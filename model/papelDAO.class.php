@@ -38,7 +38,7 @@ class papelDAO {
     
     // usado para ler a descrição do papel pelo ID
     function readName($param){
-        $stmt = $this->stmt->prepare("SELECT * FROM papel WHERE idPapel = ? limit 0,1"); 
+        $stmt = $this->stmt->prepare("SELECT descPapel FROM papel WHERE idPapel = ? limit 0,1"); 
         $stmt->bindValue(1, $param);
             // Executa a instrução SQL
         $stmt->execute();

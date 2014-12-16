@@ -11,8 +11,8 @@ if(isset($_SESSION['Mensagem'])){
 
 <?php
 echo "<div class='right-button-margin'>";
-    echo "<a href='view_evento.php' class='btn btn-default pull-right'>";
-    echo "<span class='glyphicon glyphicon-list-alt'></span> Visualizar Eventos</a>";
+    echo "<a href='view_agendaGeral.php' class='btn btn-default pull-right'>";
+    echo "<span class='glyphicon glyphicon-list-alt'></span> Visualizar Agenda</a>";
 echo "</div>";
 
 include_once '../config/database.class.php';
@@ -21,7 +21,7 @@ $database = new Database();
 $db = $database->getConnection();
 ?> 
 
-<!-- HTML form for creating a product -->
+<!-- HTML form para criar alocacao -->
 <form action='../controller/controleAlocacao.php?operacao=salvar' method='post'>
  
     <table class='table table-hover table-responsive table-bordered'>
@@ -79,8 +79,9 @@ $db = $database->getConnection();
             <td>Data Alocação</td>
             <td>
                 <div class="form-group has-feedback">
-                    <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" required/>
-                    <span class="form-control-feedback glyphicon glyphicon glyphicon-off" aria-hidden="true"></span>
+                    <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" required>
+                    <span class="form-control-feedback glyphicon glyphicon glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                    </input>
                 </div>
             </td>
         
