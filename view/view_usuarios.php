@@ -1,17 +1,18 @@
-<?php
-$page_title = "Visualizar Usuarios";
+﻿<?php
+$page_title = "Visualizar Usuários";
 include_once "header.php";
 
-if(isset($_SESSION['Mensagem'])){
-    echo $_SESSION['Mensagem'];
-    session_unset();
-}
+    if(isset($_SESSION['Mensagem'])){
+        echo $_SESSION['Mensagem'];
+        unset($_SESSION['Mensagem']);
+    }
 ?>
 
 <?php
 
 echo "<div class='right-button-margin'>";
-    echo "<a href='criar_usuario.php' class='btn btn-default pull-right'>Criar usuário</a>";
+    echo "<a href='criar_usuario.php' class='btn btn-default pull-right'>";
+    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usuário</a>";
 echo "</div>";
 
 //verificar se a pagina recebe parametro URL, pagina default é 1
@@ -38,39 +39,53 @@ $num = $stmt->rowCount();
 // display the products if there are any
 if($num>0){
     $papelDAO = new papelDAO($db);
-    echo "<table class='table table-hover table-responsive table-bordered'>";
-        echo "<tr>";
-            echo "<th>Codigo</th>";
-            echo "<th>Nome</th>";
-            echo "<th>Sobrenome</th>";
-            echo "<th>Email</th>";
-            echo "<th>Permissao</th>";
-            echo "<th>Gerenciar</th>";
-        echo "</tr>";
- 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
- 
-            extract($row);
- 
-            echo "<tr>";
-                echo "<td>{$idUsuario}</td>";
-                echo "<td>{$nome}</td>";
-                echo "<td>{$sobrenome}</td>";
-                echo "<td>{$email}</td>";
-                echo "<td>";
-                    echo $papelDAO->readName($row['idPapel']);
-                echo"</td>";
-                echo "<td>";
-                        // botões edite e delete
-                        echo "<a href='update_usuario.php?idUsuario={$idUsuario}' class='btn btn-default left-margin'>Editar</a>";
-                        echo "<a delete-id='{$idUsuario}' class='btn btn-default delete-object'>Deletar</a>";
-                echo "</td>";
-            echo "</tr>";
- 
-        }
- 
-    echo "</table>";
- 
+    echo "<div class=\"row\">";
+        echo "<div class=\"panel panel-primary filterable\">";
+            echo "<div class=\"panel-heading\">";
+                echo "<h3 class=\"panel-title\">Usuarios</h3>";
+                echo "<div class=\"pull-right\">";
+                    echo "<button class=\"btn btn-default btn-xs btn-filter\"><span class=\"glyphicon glyphicon-filter\"></span> Filtrar</button>";
+                echo "</div>";
+            echo "</div>";
+            echo "<table class='table table-hover'>";
+                echo "<thead>";
+                    echo "<tr class=\"filters\">";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Codigo\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Nome\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Sobrenome\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Email\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Permissao\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Gerenciar\" disabled></th>";
+                    echo "</tr>";
+                echo "</thead>";
+
+                echo "<tbody>"; 
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+                        extract($row);
+
+                        echo "<tr>";
+                            echo "<td>{$idUsuario}</td>";
+                            echo "<td>{$nome}</td>";
+                            echo "<td>{$sobrenome}</td>";
+                            echo "<td>{$email}</td>";
+                            echo "<td>";
+                                echo $papelDAO->readName($row['idPapel']);
+                            echo"</td>";
+                            echo "<td class='text-center'>";
+                                    // botões edite e delete
+                                    echo "<a href='update_usuario.php?idUsuario={$idUsuario}' class='btn btn-default left-margin'>";
+                                    echo "<span class='glyphicon glyphicon-cog' ></span> Editar</a>";
+                                    echo "<a delete-id='{$idUsuario}' class='btn btn-default delete-object'>";
+                                    echo "<span class='glyphicon glyphicon-trash' ></span> Deletar</a>";
+                            echo "</td>";
+                        echo "</tr>";
+
+                    }
+                echo "</tbody>"; 
+            echo "</table>";
+        echo "</div>";
+    echo "</div>";
     //botões de paginação vão aqui
     include_once 'paginacao_usuario.php';
 }
@@ -82,6 +97,50 @@ else{
 ?>
 
 <script>
+$(document).ready(function(){
+    $('.filterable .btn-filter').click(function(){
+        var $panel = $(this).parents('.filterable'),
+        $filters = $panel.find('.filters input'),
+        $tbody = $panel.find('.table tbody');
+        if ($filters.prop('disabled') == true) {
+            $filters.prop('disabled', false);
+            $filters.first().focus();
+        } else {
+            $filters.val('').prop('disabled', true);
+            $tbody.find('.no-result').remove();
+            $tbody.find('tr').show();
+        }
+    });
+
+    $('.filterable .filters input').keyup(function(e){
+        /* Ignore tab key */
+        var code = e.keyCode || e.which;
+        if (code == '9') return;
+        /* Useful DOM data and selectors */
+        var $input = $(this),
+        inputContent = $input.val().toLowerCase(),
+        $panel = $input.parents('.filterable'),
+        column = $panel.find('.filters th').index($input.parents('th')),
+        $table = $panel.find('.table'),
+        $rows = $table.find('tbody tr');
+        /* Dirtiest filter function ever ;) */
+        var $filteredRows = $rows.filter(function(){
+            var value = $(this).find('td').eq(column).text().toLowerCase();
+            return value.indexOf(inputContent) === -1;
+        });
+        /* Clean previous no-result if exist */
+        $table.find('tbody .no-result').remove();
+        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+        $rows.show();
+        $filteredRows.hide();
+        /* Prepend no-result row if all rows are filtered */
+        if ($filteredRows.length === $rows.length) {
+            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+        }
+    });
+});
+
+    
 $(document).on('click', '.delete-object', function(){
  
     var id = $(this).attr('delete-id');
@@ -104,7 +163,7 @@ $(document).on('click', '.delete-object', function(){
 });
 </script>
 
-
 <?php
 include_once "footer.php";
+
 ?>
