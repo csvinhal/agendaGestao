@@ -15,7 +15,7 @@ $db = $database->getConnection();
     }
     
     if(isset($_GET['idColaborador'])){ 
-        $idColaborador  = filter_input(INPUT_GET,'idColaborador', FILTER_SANITIZE_NUMBER_INT);
+        $idColaborador = filter_input(INPUT_GET, 'idColaborador', FILTER_SANITIZE_NUMBER_INT);
     }else{
         die('ERROR: Faltando o id do Colaborador.');
     }
@@ -68,8 +68,7 @@ $db = $database->getConnection();
 
 <!-- /modal-header -->
 <div class="modal-body">
-    <form action='../controller/controleAlocacao.php?operacao=update&idCol=<?php echo $idColaborador ?>
-      &data=<?php echo $data?>&horaIni=<?php echo $horaIni?>&horaFim=<?php echo $horaFim?>' method='post'>
+    <form action='../controller/controleAlocacao.php?operacao=update&idCol=<?php echo $idColaborador?>&data=<?php echo $data?>&horaIni=<?php echo $horaIni?>&horaFim=<?php echo $horaFim?>' method='post'>
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>Colaborador:*</td>

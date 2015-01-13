@@ -60,7 +60,7 @@ class alocacaoDAO {
                 horaFim = ?, idColaborador = ?, desAlocacao = ?, idTipAloc = ?, confirmado = ?, 
                 idUsuario = ?, idCliente = ? 
                 WHERE dataAlocacao = ? AND horaInicio = ? AND
-                horaFim = ? AND idColaborador = ?)");
+                horaFim = ? AND idColaborador = ?");
             // Adiciona os dados do alocacao no lugar das interrogações da instrução SQL
             $stmt->bindValue(1,$alocacao->dataAlocacao);
             $stmt->bindValue(2,$alocacao->horaInicio);
