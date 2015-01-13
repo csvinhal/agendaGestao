@@ -1,12 +1,14 @@
-<?php
+﻿<?php
 // set page headers
 $page_title = "Cadastrar Usuário";
 include_once "header.php";
 
 if(isset($_SESSION['Mensagem'])){
     echo $_SESSION['Mensagem'];
-    session_unset();
+    unset($_SESSION['Mensagem']);
 }
+
+include_once '../config/functions.php';
 ?>
 
 <?php
@@ -18,30 +20,30 @@ echo "</div>";
 
 
 <!-- HTML form para cadastrar Usuario -->
-<form action='../controller/controleUsuario.php?operacao=salvar' method='post'>
+<form action="../controller/controleUsuario.php?operacao=salvar" method="post">
  
     <table class='table table-hover table-responsive table-bordered'>
  
         <tr>
-            <td>Nome:</td>
-            <td><input type='text' name='nome' class='form-control' required></td>
+            <td>Nome:*</td>
+            <td><input type='text' name='nome' class='form-control' autocomplete="off" maxlength="50" required></td>
         </tr>
  
         <tr>
-            <td>Sobrenome:</td>
-            <td><input type='text' name='sobrenome' class='form-control' required></td>
+            <td>Sobrenome:*</td>
+            <td><input type='text' name='sobrenome' class='form-control' autocomplete="off" maxlength="50" required></td>
         </tr>
         <tr>
-            <td>Email:</td>
-            <td><input type='text' name='email' class='form-control' required></td>
+            <td>Email:*</td>
+            <td><input type='text' name='email' class='form-control' autocomplete="off" maxlength="100" required></td>
         </tr>
         <tr>
-            <td>Senha:</td>
-            <td><input type='password' name='senha' class='form-control' required></td>
+            <td>Senha:*</td>
+            <td><input type='password' name='senha' class='form-control' autocomplete="off" maxlength="20" required></td>
         </tr> 
         <tr>
-            <td>Perfil:</td>
-            <td><select class='form-control' name="dlPerfil">
+            <td>Perfil:*</td>
+            <td><select class='form-control' name="dlPapel">
                         <option value="" selected="selected">Selecione...</option>
                         <option value="A">Administrador</option>
                         <option value="P">PMO</option>

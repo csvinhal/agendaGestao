@@ -1,7 +1,6 @@
-<?php
+﻿<?php
 $page_title = "Home Page";   
 include_once "header.php";
-
 ?>
 
 

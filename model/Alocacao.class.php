@@ -12,12 +12,12 @@
  * @author Cristiano
  */
 class Alocacao {
-        private $idAlocacao;
-	private $desAlocacao;
 	private $dataAlocacao;
-        private $periodo;
-	private $horaInicio;
+        private $horaInicio;
         private $horaFim;
+	private $desAlocacao;
+        private $idTipAloc;
+        private $periodo;
         private $confirmado;
 	private $idUsuario;
 	private $idColaborador;

@@ -1,7 +1,6 @@
-<?php
-include_once '/config/functions.php';
+﻿<?php
+include './config/functions.php';
 sec_session_start();
- 
 // Limpa todas as seções 
 $_SESSION = array();
  
@@ -18,5 +17,5 @@ setcookie(session_name(),
  
 //Desrtoi a sessão 
 session_destroy();
-header('Location: index.php');
+header('Location: ./index.php');
 ?>

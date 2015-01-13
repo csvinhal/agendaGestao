@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 // set page headers
 $page_title = "Cadastrar Alocação";
 include_once "header.php";
 
 if(isset($_SESSION['Mensagem'])){
     echo $_SESSION['Mensagem'];
-    session_unset();
+    unset($_SESSION['Mensagem']);
 }
 ?>
 
@@ -27,7 +27,7 @@ $db = $database->getConnection();
     <table class='table table-hover table-responsive table-bordered'>
  
         <tr>
-            <td>Colaborador</td>
+            <td>Colaborador:*</td>
             <td>
                 <?php
                 include_once '../model/usuarioDAO.class.php';                
@@ -48,7 +48,7 @@ $db = $database->getConnection();
             </td>
         </tr>
         <tr>
-            <td>Cliente</td>
+            <td>Cliente:*</td>
             <td>
                 <?php
                 include_once '../model/clienteDAO.class.php';                
@@ -69,28 +69,47 @@ $db = $database->getConnection();
             </td>
         </tr>
         <tr>
-            <td>Descrição</td>
+            <td>Descrição:*</td>
             <td>
-                <textarea type="text" name="desAlocacao" class="form-control" required></textarea>
+                <textarea type="text" name="desAlocacao" class="form-control" autocomplete="off" required></textarea>
             </td>
         
         </tr>
         <tr>
-            <td>Data Alocação</td>
+            <td>Data Alocação:*</td>
             <td>
                 <div class="form-group has-feedback">
-                    <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" required>
+                    <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" autocomplete="off" required>
                     <span class="form-control-feedback glyphicon glyphicon glyphicon glyphicon-calendar" aria-hidden="true"></span>
                     </input>
                 </div>
             </td>
         
         </tr>
-        
         <tr>
-            <td>Período</td>
+            <td>Tipo de Alocação:*</td>
+            <td>
+                <?php 
+                include_once '../model/tipoAlocacaoDAO.class.php';
+                $alocDAO = new tipoAlocacaoDAO($db);
+                $stmt = $alocDAO->read();
+                
+                echo "<select name=\"alocacao\" class=\"form-control\" required>";
+                echo "<option>Selecione...</option>";
+                while ($row_tipAloc = $stmt->fetch(PDO::FETCH_ASSOC)){
+                    extract($row_tipAloc);
+                    echo "<option value=\"$idTipAloc\">$desAloc</option>";
+                }
+                echo "</select>";
+                ?>
+            </td>
+        
+        </tr>        
+        <tr>
+            <td>Período:*</td>
             <td>
                 <select name="periodo" class="form-control" required>
+                    <option value="" selected>Selecione...</option>
                     <option value="M">Matutino</option>
                     <option value="V">Vespertino</option>
                     <option value="I">Integral</option>
@@ -99,10 +118,11 @@ $db = $database->getConnection();
         
         </tr>
         <tr>
-            <td>Confirmado?</td>
+            <td>Confirmado?:*</td>
             <td>
                 <select name="confirmado" class="form-control" required>
-                    <option value="S" selected>Sim</option>
+                    <option value="" selected>Selecione...</option>
+                    <option value="S">Sim</option>
                     <option value="N">Não</option>
                 </select>
             </td>

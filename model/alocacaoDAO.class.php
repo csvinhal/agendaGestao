@@ -33,18 +33,19 @@ class alocacaoDAO {
     function create($alocacao){
         // to get time-stamp for 'created' field
         //$this->getTimestamp();
-        $stmt = $this->conn->prepare("INSERT INTO alocacao(idAlocacao, desAlocacao, dataAlocacao, 
-            horaInicio, horaFim, confirmado, idUsuario, idColaborador, idCliente)
-                                        VALUES(null,?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->conn->prepare("INSERT INTO alocacao(dataAlocacao, horaInicio, horaFim,
+            idColaborador, desAlocacao, idTipAloc, confirmado, idUsuario, idCliente)
+                                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         // Adiciona os dados do alocacao no lugar das interrogações da instrução SQL
-        $stmt->bindValue(1,$alocacao->desAlocacao);
-        $stmt->bindValue(2,$alocacao->dataAlocacao);
-        $stmt->bindValue(3,$alocacao->horaInicio);
-        $stmt->bindValue(4,$alocacao->horaFim);
-        $stmt->bindValue(5,$alocacao->confirmado);
-        $stmt->bindValue(6,$alocacao->idUsuario);
-        $stmt->bindValue(7,$alocacao->idColaborador);
-        $stmt->bindValue(8,$alocacao->idCliente);
+        $stmt->bindValue(1,$alocacao->dataAlocacao);
+        $stmt->bindValue(2,$alocacao->horaInicio);
+        $stmt->bindValue(3,$alocacao->horaFim);
+        $stmt->bindValue(4,$alocacao->idColaborador);
+        $stmt->bindValue(5,$alocacao->desAlocacao);
+        $stmt->bindValue(6,$alocacao->idTipAloc);
+        $stmt->bindValue(7,$alocacao->confirmado);
+        $stmt->bindValue(8,$alocacao->idUsuario);
+        $stmt->bindValue(9,$alocacao->idCliente);
         
         // Executa a instrução SQL
         if($stmt->execute()){
@@ -52,6 +53,35 @@ class alocacaoDAO {
         }else{
             return false;
         } 
+    }
+    
+    function update($alocacao, $chave){
+            $stmt = $this->conn->prepare("UPDATE alocacao SET dataAlocacao = ?, horaInicio = ?, 
+                horaFim = ?, idColaborador = ?, desAlocacao = ?, idTipAloc = ?, confirmado = ?, 
+                idUsuario = ?, idCliente = ? 
+                WHERE dataAlocacao = ? AND horaInicio = ? AND
+                horaFim = ? AND idColaborador = ?)");
+            // Adiciona os dados do alocacao no lugar das interrogações da instrução SQL
+            $stmt->bindValue(1,$alocacao->dataAlocacao);
+            $stmt->bindValue(2,$alocacao->horaInicio);
+            $stmt->bindValue(3,$alocacao->horaFim);
+            $stmt->bindValue(4,$alocacao->idColaborador);
+            $stmt->bindValue(5,$alocacao->desAlocacao);
+            $stmt->bindValue(6,$alocacao->idTipAloc);
+            $stmt->bindValue(7,$alocacao->confirmado);
+            $stmt->bindValue(8,$alocacao->idUsuario);
+            $stmt->bindValue(9,$alocacao->idCliente);
+            $stmt->bindValue(10,$chave->dataAlocacao);
+            $stmt->bindValue(11,$chave->horaInicio);
+            $stmt->bindValue(12,$chave->horaFim);
+            $stmt->bindValue(13,$chave->idColaborador);
+            
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+              
     }
 
     function date_converter($_date = null) {
@@ -64,7 +94,7 @@ class alocacaoDAO {
     
     //busca todos os alocacaos
     function search(){
-        $stmt = $this->conn->prepare("SELECT * FROM alocacao ORDER BY nome");
+        $stmt = $this->conn->prepare("SELECT * FROM alocacao ORDER BY dataAlocacao");
         $stmt->execute();
         
         return $stmt;
@@ -82,8 +112,6 @@ class alocacaoDAO {
 
         if($stmt->rowCount() > 0){
             return $stmt;
-            /*$row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $alocacao->idCliente = $row['idCliente'];*/
         }else{
             return false;
         }
@@ -93,7 +121,7 @@ class alocacaoDAO {
         $stmt = $this->conn->prepare("SELECT * FROM alocacao 
                                         WHERE idColaborador = ?
                                         AND dataAlocacao = ?
-                                        AND horaInicio = '13:30' 
+                                        AND horaInicio = '14:00' 
                                         AND horaFim = '18:00'");
         $stmt->bindValue(1, $param);
         $stmt->bindValue(2, $dataAlocacao);
@@ -108,22 +136,6 @@ class alocacaoDAO {
         }
     }
     
-    function searchCol(){
-        $stmt = $this->conn->prepare("SELECT * FROM alocacao WHERE idPapel = ? ORDER BY nome");
-        $stmt->bindValue(1, 'C');
-        $stmt->execute();
-        
-        return $stmt;
-    }
-    
-    function readAll($page, $from_record_num, $records_per_page){
-        $stmt = $this->conn->prepare("SELECT * 
-                                FROM alocacao ORDER BY nome ASC LIMIT {$from_record_num}, {$records_per_page}");
-
-        $stmt->execute();
-        return $stmt;
-    }
-    
     //Numero de alocacaos cadastrados
     public function countAll(){
     
@@ -136,8 +148,12 @@ class alocacaoDAO {
     
     //Deleta o alocacao
     function delete($alocacao){
-        $stmt = $this->conn->prepare("DELETE FROM alocacao WHERE idAlocacao = ?");
-        $stmt->bindValue(1, $alocacao->idAlocacao);
+        $stmt = $this->conn->prepare("DELETE FROM alocacao WHERE dataAlocacao = ? AND horaInicio = ? AND
+                horaFim = ? AND idColaborador = ?");
+        $stmt->bindValue(1,$alocacao->dataAlocacao);
+        $stmt->bindValue(2,$alocacao->horaInicio);
+        $stmt->bindValue(3,$alocacao->horaFim);
+        $stmt->bindValue(4,$alocacao->idColaborador);
 
         if($resultado = $stmt->execute()){
             return true;
@@ -145,37 +161,5 @@ class alocacaoDAO {
             return false;
         }
     }
-    
-    function readOne($alocacao){
-        $stmt = $this->conn->prepare("SELECT * FROM alocacao WHERE idAlocacao = ? LIMIT 0,1");
-        $stmt->bindValue(1, $alocacao->idAlocacao);
-        $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $alocacao->nome = $row['nome'];
-        $alocacao->sobrenome = $row['sobrenome'];
-        $alocacao->email = $row['email'];
-        $alocacao->idPapel = $row['idPapel'];
-    }
-    
-    function update($alocacao){
-        $stmt = $this->conn->prepare("UPDATE alocacao SET nome = ?, sobrenome = ?,
-                 email= ?, idPapel = ? WHERE idAlocacao = ?");
-        // Adiciona os dados do alocacao no lugar das interrogações da instrução SQL
-        $stmt->bindValue(1,$alocacao->nome);
-        $stmt->bindValue(2,$alocacao->sobrenome);
-        $stmt->bindValue(3,$alocacao->email);
-        $stmt->bindValue(4,$alocacao->idPerfil);
-        $stmt->bindValue(5,$alocacao->idAlocacao);
-
-        // execute the query
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
 }
-
 ?>

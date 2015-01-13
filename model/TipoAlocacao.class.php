@@ -7,26 +7,16 @@
  */
 
 /**
- * Description of Cliente
+ * Description of TipoAlocacao
  *
  * @author Cristiano
  */
-class Cliente {
-    	private $idCliente;
-	private $razaoSocial;
-	private $nomeFantasia;
-	private $CNPJ;
-	private $CEP;
-	private $UF;
-	private $cidade;
-	private $bairro;
-	private $numero;
-	private $logradouro;
-        private $observacao;
-	
-	
-	
-	// Cria os métodos Getters e Setters
+class TipoAlocacao {
+    
+    private $idTipAloc;
+    private $desAloc;
+    
+    	// Cria os métodos Getters e Setters
 	public function __get($atributo){
 		return $this->$atributo;
 	}

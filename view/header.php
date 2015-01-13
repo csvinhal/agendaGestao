@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
  
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
  
-    <title><?php echo $page_title; ?></title>
+    <title>Agenda Gest&atildeo</title>
  
     <!-- some custom CSS -->
     <style>
@@ -20,10 +19,10 @@
         overflow: hidden;
     }
     </style>
- 
+    
+
+    
     <!-- Bootstrap -->
-    <!-- Latest compiled and minified CSS -->
-    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
  
@@ -35,50 +34,51 @@
     <![endif]-->
  
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
  
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <!-- Latest compiled and minified JavaScript -->
-    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     
     <script src="../js/bootstrap-datepicker.js"></script>
     <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
+    <script src="../js/filters.js"></script>
     
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js"></script>
+    
+    
     
     
 </head>
 <body>
 <?php
+header('Content-Type: text/html; charset=ISO-8859-1');
 include_once '../config/functions.php';
 sec_session_start();
-
-    // show page header
+if(login_check() === true): 
     echo "<nav class='navbar navbar-default' role='navigation'>";
         echo "<div class='container-fluid'>";
             //<!-- Brand and toggle get grouped for better mobile display -->
             echo "<div class='navbar-header'>";
-              echo "<button type='button' class='navbar-toggle collapsed' data-toggle='collapse' data-target='#bs-example-navbar-collapse-1'>";
-                echo "<span class='sr-only'>Toggle navigation</span>";
+              echo "<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-inverse-collapse'>";
                 echo "<span class='icon-bar'></span>";
                 echo "<span class='icon-bar'></span>";
                 echo "<span class='icon-bar'></span>";
               echo "</button>";
               echo "<a class='navbar-brand'href='index.php'><span class='glyphicon glyphicon-home'></span>Home</a>";
             echo "</div>";
-            echo "<div class='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>";
+            echo "<div class='collapse navbar-collapse navbar-inverse-collapse'>";
                 echo "<ul class='nav navbar-nav'>";
                   echo "<li class='dropdown'>";
-                    echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Usuário<span class='caret'></span></a>";
+                    echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Usu&aacute;rio<span class='caret'></span></a>";
                     echo "<ul class='dropdown-menu' role='menu'>";
-                        echo "<li><a href='criar_usuario.php'>Cadastrar Usuário</a></li>";
-                        echo "<li><a href='view_usuarios.php'>Editar/Deletar Usuário</a></li>";
+                        echo "<li><a href='criar_usuario.php'>Cadastrar Usu&aacute;rio</a></li>";
+                        echo "<li><a href='view_usuarios.php'>Editar/Deletar Usu&aacute;rio</a></li>";
                     echo "</ul>";
                   echo "</li>";
                   echo "<li class='dropdown'>";
@@ -91,7 +91,7 @@ sec_session_start();
                   echo "<li class='dropdown'>";
                     echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Agenda<span class='caret'></span></a>";
                     echo "<ul class='dropdown-menu' role='menu'>";
-                        echo "<li><a href='criar_alocacao.php'>Cadastrar Alocação</a></li>";
+                        echo "<li><a href='criar_alocacao.php'>Cadastrar Aloca&ccedil;&atilde;o</a></li>";
                         echo "<li><a href='view_agendaGeral.php'>Visualizar Agenda</a></li>";
                     echo "</ul>";
                   echo "</li>";
@@ -113,5 +113,7 @@ sec_session_start();
         echo "<div class='page-header'>";
             echo "<h1>{$page_title}</h1>";
         echo "</div>";
-        ?>
-    
+else:
+    header('location: ../error.php');
+endif;
+?>

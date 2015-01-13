@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]> <html class="lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]> <html class="lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Agenda Gestão</title>
+  <title>Agenda Gest&atilde;o</title>
   <link rel="stylesheet" href="style/style.css">
   <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
@@ -25,17 +25,16 @@
                   </label>
                 </p>
                 <p class="submit"><input type="submit" name="logar" id="logar" value="Login"></p>
-                <p>
                 <?php
-                    include_once '/config/functions.php';
-                    sec_session_start();    
-                    // Se existir uma sessão chamada Mensagem exibe a mesma e logo após destroi todas as sessões
-                    if(isset($_SESSION['Mensagem'])){
-                        echo $_SESSION['Mensagem'];
-                        session_unset();
+                    include_once './config/functions.php';
+                    sec_session_start();
+                        if(isset($_SESSION['Mensagem'])){
+                            echo "<p>";
+                                    echo $_SESSION['Mensagem'];
+                                    session_unset();
+                            echo "</p>";
                     }
                 ?>
-                </p>
               </form>
         </div>
     <div class="login-help">

@@ -15,11 +15,13 @@
 include_once '../config/functions.php';
 sec_session_start();
 
-if(isset($_GET['operacao'])){
+$operacao = filter_input(INPUT_GET,'operacao', FILTER_SANITIZE_URL);
+
+if(isset($operacao)){
     include_once '../model/alocacaoDAO.class.php';
     include_once '../config/database.class.php';
     
-    switch($_GET['operacao']){
+    switch($operacao){
         // Caso seja salvar dados
         case 'salvar':
             if($_POST){
@@ -27,84 +29,77 @@ if(isset($_GET['operacao'])){
                 $database = new Database();
                 $db = $database->getConnection();
                 
+                $idColaborador = filter_input(INPUT_POST,'idColaborador', FILTER_SANITIZE_NUMBER_INT);
+                $idCliente = filter_input(INPUT_POST,'idCliente', FILTER_SANITIZE_NUMBER_INT);
+                $desAlocacao = filter_input(INPUT_POST,'desAlocacao', FILTER_SANITIZE_STRING);
+                $dataAloc = filter_input(INPUT_POST, 'dataAlocacao', FILTER_SANITIZE_STRING);
+                $tipAloc = filter_input(INPUT_POST,'alocacao', FILTER_SANITIZE_STRING);
+                $periodo = filter_input(INPUT_POST,'periodo', FILTER_SANITIZE_STRING);
+                $confirmado = filter_input(INPUT_POST,'confirmado', FILTER_SANITIZE_STRING);
+                
                 //Instancia o objeto alocacao
                 $alocacao = new Alocacao($db);
                 
                 //seta as propriedados do alocacao
-                $alocacao->idColaborador = $_POST['idColaborador'];
-                $alocacao->idCliente = $_POST['idCliente'];
-                $alocacao->desAlocacao = $_POST['desAlocacao'];
-                $alocacao->periodo = $_POST['periodo'];
-                $alocacao->confirmado = $_POST['confirmado'];
-                $alocacao->idUsuario = $_SESSION['usuario'];
+                $alocacao->idColaborador = $idColaborador;
+                $alocacao->idCliente = $idCliente;
+                $alocacao->desAlocacao = $desAlocacao;
+                $alocacao->idTipAloc = $tipAloc;
+                $alocacao->periodo = $periodo;
+                $alocacao->confirmado = $confirmado;
+                $alocacao->idUsuario = $_SESSION['user_id'];
+                
                 //cria variavel array para armazenar retorno
                 $ret = array();
                 
                 $alocacaoDAO = new alocacaoDAO($db);
                 
                 //converte a data pt-BR para en
-                $alocacao->dataAlocacao = $alocacaoDAO->date_converter($_POST['dataAlocacao']);
+                $alocacao->dataAlocacao = $alocacaoDAO->date_converter($dataAloc);
                 
-                //Verifica qual o perÃ­odo da alocaÃ§Ã£o e insere de acordo
-                if($alocacao->periodo = 'M'){
+                //Verifica qual o período da alocação e insere de acordo
+                if($alocacao->periodo == 'M'){
                     $alocacao->horaInicio = '08:00';
                     $alocacao->horaFim = '12:00';
-                    //cria o usuÃ¡rio
+                    //cria a alocacao
                     if($alocacaoDAO->create($alocacao)){   
                         $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "AlocaÃ§Ã£o foi inserida com sucesso.";
+                        $ret[] = "Alocação foi inserida com sucesso.";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
                         header('location:../view/criar_alocacao.php');
                     }else{
-                        $ret[] = $alocacao->idColaborador;
-                        $ret[] = $alocacao->idCliente;
-                        $ret[] = $alocacao->desAlocacao;
-                        $ret[] = $alocacao->dataAlocacao;
-                        $ret[] = $alocacao->periodo;
-                        $ret[] = $alocacao->horaInicio;
-                        $ret[] = $alocacao->horaFim;
-                        $ret[] = $alocacao->confirmado;
-                        $ret[] = $alocacao->idUsuario;
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "NÃ£o foi possivel criar a alocacao.";
+                        $ret[] = "Não foi possivel criar a alocacão.";
                         $ret[] = "</div>";
-                        $retorno = implode('<br />', $ret);
+                        $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
                         header('location:../view/criar_alocacao.php');
                     }
-                } else if($alocacao->periodo = 'V'){
-                    $alocacao->horaInicio = '13:30';
+                }else if($alocacao->periodo == 'V'){
+                    $alocacao->horaInicio = '14:00';
                     $alocacao->horaFim = '18:00';
                     if($alocacaoDAO->create($alocacao)){   
                         $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "AlocaÃ§Ã£o foi inserida com sucesso.";
+                        $ret[] = "Alocação foi inserida com sucesso.";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
                         header('location:../view/criar_alocacao.php');
                     }else{
-                        $ret[] = $alocacao->idColaborador;
-                        $ret[] = $alocacao->idCliente;
-                        $ret[] = $alocacao->desAlocacao;
-                        $ret[] = $alocacao->dataAlocacao;
-                        $ret[] = $alocacao->periodo;
-                        $ret[] = $alocacao->horaInicio;
-                        $ret[] = $alocacao->horaFim;
-                        $ret[] = $alocacao->confirmado;
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "NÃ£o foi possivel criar a alocacao.";
+                        $ret[] = "Não foi possivel criar a alocacao.";
                         $ret[] = "</div>";
-                        $retorno = implode('<br />', $ret);
+                        $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
                         header('location:../view/criar_alocacao.php');
                     }
-                }else if($alocacao->periodo = 'I'){
+                } else if($alocacao->periodo == 'I'){
                     $i=0;
                     $alocacao->horaInicio = '08:00';
                     $alocacao->horaFim = '12:00';
@@ -113,81 +108,31 @@ if(isset($_GET['operacao'])){
                         if($alocacaoDAO->create($alocacao)){   
                             $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                             $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                            $ret[] = "AlocaÃ§Ã£o foi inserida com sucesso.";
+                            $ret[] = "Alocação foi inserida com sucesso.";
                             $ret[] = "</div>";
                             $retorno = implode('', $ret);
                             $_SESSION['Mensagem'] = $retorno;
                         }else{
-                            $ret[] = $alocacao->idColaborador;
-                            $ret[] = $alocacao->idCliente;
-                            $ret[] = $alocacao->desAlocacao;
-                            $ret[] = $alocacao->dataAlocacao;
-                            $ret[] = $alocacao->periodo;
-                            $ret[] = $alocacao->horaInicio;
-                            $ret[] = $alocacao->horaFim;
-                            $ret[] = $alocacao->confirmado;
                             $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                             $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                            $ret[] = "NÃ£o foi possivel criar a alocacao.";
+                            $ret[] = "Não foi possível criar a alocacão.";
                             $ret[] = "</div>";
-                            $retorno = implode('<br />', $ret);
+                            $retorno = implode('', $ret);
                             $_SESSION['Mensagem'] = $retorno;
                             header('location:../view/criar_alocacao.php');
                         }
                         //seta novo horÃ¡rio
-                        $alocacao->horaInicio = '13:30';
+                        $alocacao->horaInicio = '14:00';
                         $alocacao->horaFim = '18:00';
                     }
                     header('location:../view/criar_alocacao.php');
                 }
             }
         break;//Fecha case salvar
-        case 'update':  
-            if($_POST){
-                //Instancia uma nova conexaos
-                $database = new Database();
-                $db = $database->getConnection();
-                
-                //Instancia o objeto alocacao
-                $alocacao = new Alocacao($db);
-                
-                //seta as propriedados do alocacao
-                $alocacao->nome = $_POST['nome'];
-                $alocacao->sobrenome = $_POST['sobrenome'];
-                $alocacao->email = $_POST['email'];
-                $alocacao->idPerfil = $_POST['idPapel'];
-                $alocacao->idAlocacao = $_GET['idAlocacao'];
-               
-                //cria variavel array para armazenar retorno
-                $ret = array();
-                
-                $alocacaoDAO = new alocacaoDAO($db);
-                
-                //cria o usuÃ¡rio
-                if($alocacaoDAO->update($alocacao)){
-                    $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Alocacao foi atualizado.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_alocacaos.php');
-                }
-                else{
-                    $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "NÃ£o foi possÃ­vel atualizar o usuÃ¡rio.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_alocacaos.php');
-                }
-            }
-        break;//Fecha case salvar
     }
 }
 
-if(isset($_POST['operacao'])){
+if($_POST['operacao']){
     include_once '../model/alocacaoDAO.class.php';
     include_once '../config/database.class.php';
     
@@ -201,18 +146,34 @@ if(isset($_POST['operacao'])){
             //Instancia o objeto alocacao
             $alocacao = new Alocacao($db);
 
-            //Seta o usuÃ¡rio que serÃ¡ deletado
-            $alocacao->idAlocacao = $_POST['object_id'];
+            //Seta os dados da alocacao que sera deletada
+            $alocacao->dataAlocacao = $_POST['object_data'];
+            $alocacao->idColaborador = $_POST['object_col'];
+            $alocacao->horaInicio = $_POST['object_ini'];
+            $alocacao->horaFim = $_POST['object_fim'];
             
             //Instancia o objeto alocacaoDAO
             $alocacaoDAO = new alocacaoDAO($db);
+            
+            //cria variavel array para armazenar retorno
+            $ret = array();
 
             //deleta o alocacao
             if($alocacaoDAO->delete($alocacao)){
-                $_SESSION['Mensagem'] = "O usuÃ¡rio foi deletado com sucesso!.";
+                $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
+                $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $ret[] = "A aloca&ccedil;&atilde;o foi deletada com sucesso!";
+                $ret[] = "</div>";
+                $retorno = implode('', $ret);
+                $_SESSION['Mensagem'] = $retorno;
+                
             }else{
-                $_SESSION['Mensagem'] = "NÃ£o foi possÃ­vel deletar o usuÃ¡rio.";
-
+                $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
+                $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $ret[] = "N&atilde;o foi poss&iacute;vel deletar a aloca&ccedil;&atilde;o!";
+                $ret[] = "</div>";
+                $retorno = implode('', $ret);
+                $_SESSION['Mensagem'] = $retorno; 
             }
         break;//Fecha case salvar
     

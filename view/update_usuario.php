@@ -1,6 +1,11 @@
 <?php
 $page_title = "Atualizar Usuário";
 include_once "header.php";
+
+    if(isset($_SESSION['Mensagem'])){
+        echo $_SESSION['Mensagem'];
+        unset($_SESSION['Mensagem']);
+    }
 ?>
 
 <?php

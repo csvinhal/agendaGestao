@@ -15,11 +15,15 @@
 include_once '../config/functions.php';
 sec_session_start();
 
-if(isset($_GET['operacao'])){
+$operacao = filter_input(INPUT_GET,'operacao', FILTER_SANITIZE_URL);
+
+if(isset($operacao)){
     include_once '../model/clienteDAO.class.php';
     include_once '../config/database.class.php';
+    include_once '../validate/Validate.class.php';
+    include_once '../model/Cliente.class.php';
     
-    switch($_GET['operacao']){
+    switch($operacao){
         // Caso seja salvar dados
         case 'salvar':
             if($_POST){
@@ -27,42 +31,74 @@ if(isset($_GET['operacao'])){
                 $database = new Database();
                 $db = $database->getConnection();
                 
-                //Instancia o objeto cliente
-                $cliente = new Cliente($db);
+                //cria variavel array para armazenar Retorno
+                $error = array();
                 
-                //seta as propriedados do cliente
-                $cliente->razaoSocial = $_POST['razaosocial'];
-                $cliente->nomeFantasia = $_POST['nomefantasia'];
-                $cliente->CNPJ = $_POST['CNPJ'];
-                $cliente->CEP = $_POST['CEP'];
-                $cliente->UF = $_POST['UF'];
-                $cliente->cidade = $_POST['cidade'];
-                $cliente->bairro = $_POST['bairro'];
-                $cliente->rua = $_POST['rua'];
-                $cliente->numero = $_POST['numero'];
-               
-                //cria variavel array para armazenar retorno
-                $ret = array();
+                $razaosocial = filter_input(INPUT_POST,'razaosocial', FILTER_SANITIZE_STRING);
+                $nomefantasia = filter_input(INPUT_POST,'nomefantasia', FILTER_SANITIZE_STRING);
+                $CNPJ = filter_input(INPUT_POST,'CNPJ', FILTER_SANITIZE_NUMBER_INT);
+                $cep = filter_input(INPUT_POST,'cep', FILTER_SANITIZE_NUMBER_INT);
+                $UF = filter_input(INPUT_POST,'UF', FILTER_SANITIZE_STRING);
+                $cidade = filter_input(INPUT_POST,'cidade', FILTER_SANITIZE_STRING);
+                $bairro = filter_input(INPUT_POST,'bairro', FILTER_SANITIZE_STRING);
+                $logradouro = filter_input(INPUT_POST,'logradouro', FILTER_SANITIZE_STRING);
+                $numero = filter_input(INPUT_POST,'numero', FILTER_SANITIZE_NUMBER_INT);
+                $observacao = filter_input(INPUT_POST,'observacao', FILTER_SANITIZE_STRING);
                 
-                $clienteDAO = new clienteDAO($db);
-                
-                //cria o cliente
-                if($clienteDAO->create($cliente)){   
-                    $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Cliente foi criado com sucesso.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/criar_cliente.php');
-                }else{
-                    $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Não foi possivel criar o cliente.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
+                if(Validate::validarRazaoSocial($razaosocial) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarNomeFantasia($nomefantasia) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarLogradouro($logradouro) !== false){
+                        $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarNumero($numero) !== false){
+                        $error[] = $_SESSION['Mensagem'];
+                }
+
+                if(count($error) > 0){
+                    $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
                     header('location:../view/criar_cliente.php');
+                }else{
+                    //Instancia o objeto cliente
+                    $cliente = new Cliente($db);
+                    
+                    //Instancia o objeto clienteDAO
+                    $clienteDAO = new clienteDAO($db);
+                    
+                    //seta as propriedados do cliente
+                    $cliente->razaoSocial = $razaosocial;
+                    $cliente->nomeFantasia = $nomefantasia;
+                    $cliente->CNPJ = Validate::removeNaoNumeros($CNPJ);
+                    $cliente->CEP = Validate::removeNaoNumeros($cep);
+                    $cliente->UF = $UF;
+                    $cliente->cidade = $cidade;
+                    $cliente->bairro = $bairro;
+                    $cliente->logradouro = $logradouro;
+                    $cliente->numero = $numero;
+                    $cliente->observacao = $observacao;
+
+                    //cria o cliente
+                    if($clienteDAO->create($cliente)){   
+                        $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Cliente foi criado com sucesso.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/criar_cliente.php');
+                    }else{
+                        $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Não foi possivel criar o cliente.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/criar_cliente.php');
+                    }
                 }
             }
         break;//Fecha case salvar
@@ -75,41 +111,80 @@ if(isset($_GET['operacao'])){
                 //Instancia o objeto cliente
                 $cliente = new Cliente($db);
                 
-                //seta as propriedados do cliente
-                $cliente->razaoSocial = $_POST['razaosocial'];
-                $cliente->nomeFantasia = $_POST['nomefantasia'];
-                $cliente->CNPJ = $_POST['CNPJ'];
-                $cliente->CEP = $_POST['CEP'];
-                $cliente->UF = $_POST['UF'];
-                $cliente->cidade = $_POST['cidade'];
-                $cliente->bairro = $_POST['bairro'];
-                $cliente->rua = $_POST['rua'];
-                $cliente->numero = $_POST['numero'];
-                $cliente->idCliente = $_GET['idCliente'];
-               
-                //cria variavel array para armazenar retorno
-                $ret = array();
+                $razaosocial = filter_input(INPUT_POST,'razaosocial', FILTER_SANITIZE_STRING);
+                $nomefantasia = filter_input(INPUT_POST,'nomefantasia', FILTER_SANITIZE_STRING);
+                $CNPJ = filter_input(INPUT_POST,'CNPJ', FILTER_SANITIZE_NUMBER_INT);
+                $cep = filter_input(INPUT_POST,'cep', FILTER_SANITIZE_NUMBER_INT);
+                $UF = filter_input(INPUT_POST,'UF', FILTER_SANITIZE_STRING);
+                $cidade = filter_input(INPUT_POST,'cidade', FILTER_SANITIZE_STRING);
+                $bairro = filter_input(INPUT_POST,'bairro', FILTER_SANITIZE_STRING);
+                $logradouro = filter_input(INPUT_POST,'logradouro', FILTER_SANITIZE_STRING);
+                $numero = filter_input(INPUT_POST,'numero', FILTER_SANITIZE_NUMBER_INT);
+                $idCliente = filter_input(INPUT_GET,'idCliente', FILTER_SANITIZE_NUMBER_INT);
                 
-                $clienteDAO = new clienteDAO($db);
-                
-                //atualiza o cliente
-                if($clienteDAO->update($cliente)){
-                    $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Cliente foi atualizado.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_cliente.php');
+                if(Validate::validarRazaoSocial($razaosocial) !== false){
+                    $error[] = $_SESSION['Mensagem'];
                 }
-                else{
-                    $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Não foi possível atualizar o cliente.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
+                if(Validate::validarNomeFantasia($nomefantasia) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarCNPJ($CNPJ) !== false){
+                        $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarCidade($cidade) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarBairro($bairro) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarLogradouro($logradouro) !== false){
+                        $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarNumero($numero) !== false){
+                        $error[] = $_SESSION['Mensagem'];
+                }
+                
+                if(count($error) > 0){
+                    $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_cliente.php');
+                    header('location:../view/update_cliente.php?idCliente='.$idCliente);
+                }else{                
+                    //seta as propriedados do cliente
+                    $cliente->razaoSocial = $razaosocial;
+                    $cliente->nomeFantasia = $nomefantasia;
+                    $cliente->CNPJ = Validate::removeNaoNumeros($CNPJ);
+                    $cliente->CEP = Validate::removeNaoNumeros($cep);
+                    $cliente->UF = $UF;
+                    $cliente->cidade = $cidade;
+                    $cliente->bairro = $bairro;
+                    $cliente->logradouro = $logradouro;
+                    $cliente->numero = $numero;
+                    $cliente->idCliente = $idCliente;
+
+                    //cria variavel array para armazenar errororno
+                    $error = array();
+
+                    $clienteDAO = new clienteDAO($db);
+
+                    //atualiza o cliente
+                    if($clienteDAO->update($cliente)){
+                        $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Cliente foi atualizado.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/view_cliente.php');
+                    }
+                    else{
+                        $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Não foi possível atualizar o cliente.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/view_cliente.php');
+                    }
                 }
             }
         break;//Fecha case salvar

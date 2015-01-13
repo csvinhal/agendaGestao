@@ -1,5 +1,5 @@
-﻿<?php
-$page_title = "Visualizar Usuários";
+<?php
+$page_title = "Visualizar Usu&aacute;rios";
 include_once "header.php";
 
     if(isset($_SESSION['Mensagem'])){
@@ -12,10 +12,10 @@ include_once "header.php";
 
 echo "<div class='right-button-margin'>";
     echo "<a href='criar_usuario.php' class='btn btn-default pull-right'>";
-    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usuário</a>";
+    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usu�rio</a>";
 echo "</div>";
 
-//verificar se a pagina recebe parametro URL, pagina default é 1
+//verificar se a pagina recebe parametro URL, pagina default � 1
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
 //numero de linhas por paginas
@@ -42,7 +42,7 @@ if($num>0){
     echo "<div class=\"row\">";
         echo "<div class=\"panel panel-primary filterable\">";
             echo "<div class=\"panel-heading\">";
-                echo "<h3 class=\"panel-title\">Usuarios</h3>";
+                echo "<h3 class=\"panel-title\">Usu&aacute;rios</h3>";
                 echo "<div class=\"pull-right\">";
                     echo "<button class=\"btn btn-default btn-xs btn-filter\"><span class=\"glyphicon glyphicon-filter\"></span> Filtrar</button>";
                 echo "</div>";
@@ -50,11 +50,11 @@ if($num>0){
             echo "<table class='table table-hover'>";
                 echo "<thead>";
                     echo "<tr class=\"filters\">";
-                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Codigo\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"C&oacute;digo\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Nome\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Sobrenome\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Email\" disabled></th>";
-                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Permissao\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Permiss&atilde;o\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Gerenciar\" disabled></th>";
                     echo "</tr>";
                 echo "</thead>";
@@ -73,7 +73,7 @@ if($num>0){
                                 echo $papelDAO->readName($row['idPapel']);
                             echo"</td>";
                             echo "<td class='text-center'>";
-                                    // botões edite e delete
+                                    // botoes edite e delete
                                     echo "<a href='update_usuario.php?idUsuario={$idUsuario}' class='btn btn-default left-margin'>";
                                     echo "<span class='glyphicon glyphicon-cog' ></span> Editar</a>";
                                     echo "<a delete-id='{$idUsuario}' class='btn btn-default delete-object'>";
@@ -86,65 +86,21 @@ if($num>0){
             echo "</table>";
         echo "</div>";
     echo "</div>";
-    //botões de paginação vão aqui
+    //botoes de paginacao vao aqui
     include_once 'paginacao_usuario.php';
 }
  
-// avisa que não há usuários
+// avisa que nao ha usuarios
 else{
-    echo $num."<div>Não foram encontrados usuários.</div>";
+    echo $num."<div>N�o foram encontrados usu�rios.</div>";
 }
 ?>
 
 <script>
-$(document).ready(function(){
-    $('.filterable .btn-filter').click(function(){
-        var $panel = $(this).parents('.filterable'),
-        $filters = $panel.find('.filters input'),
-        $tbody = $panel.find('.table tbody');
-        if ($filters.prop('disabled') == true) {
-            $filters.prop('disabled', false);
-            $filters.first().focus();
-        } else {
-            $filters.val('').prop('disabled', true);
-            $tbody.find('.no-result').remove();
-            $tbody.find('tr').show();
-        }
-    });
-
-    $('.filterable .filters input').keyup(function(e){
-        /* Ignore tab key */
-        var code = e.keyCode || e.which;
-        if (code == '9') return;
-        /* Useful DOM data and selectors */
-        var $input = $(this),
-        inputContent = $input.val().toLowerCase(),
-        $panel = $input.parents('.filterable'),
-        column = $panel.find('.filters th').index($input.parents('th')),
-        $table = $panel.find('.table'),
-        $rows = $table.find('tbody tr');
-        /* Dirtiest filter function ever ;) */
-        var $filteredRows = $rows.filter(function(){
-            var value = $(this).find('td').eq(column).text().toLowerCase();
-            return value.indexOf(inputContent) === -1;
-        });
-        /* Clean previous no-result if exist */
-        $table.find('tbody .no-result').remove();
-        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
-        $rows.show();
-        $filteredRows.hide();
-        /* Prepend no-result row if all rows are filtered */
-        if ($filteredRows.length === $rows.length) {
-            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
-        }
-    });
-});
-
-    
 $(document).on('click', '.delete-object', function(){
  
     var id = $(this).attr('delete-id');
-    var q = confirm("Tem certeza que deseja excluir o usuário??");
+    var q = confirm("Tem certeza que deseja excluir o usu&aacute;rio??");
  
     if (q == true){
  
@@ -154,7 +110,7 @@ $(document).on('click', '.delete-object', function(){
         }, function(data){
             location.reload();
         }).fail(function() {
-            alert('Não foi possível deletar o usuário.');
+            alert('N�o foi poss�vel deletar o usu&aacute;rio.');
         });
  
     }

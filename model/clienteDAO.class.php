@@ -12,7 +12,6 @@
  * @author Cristiano
  */
     include_once '../config/database.class.php';
-    include_once 'Cliente.class.php';
 
     class clienteDAO {
     
@@ -29,8 +28,8 @@
     
     function create($cliente){
 
-        $stmt = $this->conn->prepare("INSERT INTO cliente(idCliente, razaosocial, nomefantasia, CNPJ, CEP, UF, cidade, bairro, rua, numero)
-                                                                                    VALUES(null,?,?,?,?,?,?,?,?,?)");
+        $stmt = $this->conn->prepare("INSERT INTO cliente(idCliente, razaosocial, nomefantasia, CNPJ, CEP, UF, cidade, bairro, logradouro, numero, observacao)
+                                                                                    VALUES(null,?,?,?,?,?,?,?,?,?,?)");
         // Adiciona os dados do cliente no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$cliente->razaoSocial);
         $stmt->bindValue(2,$cliente->nomeFantasia);
@@ -39,8 +38,9 @@
         $stmt->bindValue(5,$cliente->UF);
         $stmt->bindValue(6,$cliente->cidade);
         $stmt->bindValue(7,$cliente->bairro);
-        $stmt->bindValue(8,$cliente->rua);
+        $stmt->bindValue(8,$cliente->logradouro);
         $stmt->bindValue(9,$cliente->numero);
+        $stmt->bindValue(10,$cliente->observacao);
         
         // Executa a instrução SQL
         if($stmt->execute()){
@@ -95,20 +95,20 @@
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $cliente->razaosocial = $row['razaosocial'];
-        $cliente->nomefantasia = $row['nomefantasia'];
+        $cliente->razaoSocial = $row['razaosocial'];
+        $cliente->nomeFantasia = $row['nomefantasia'];
         $cliente->CNPJ = $row['CNPJ'];
         $cliente->CEP = $row['CEP'];
         $cliente->UF = $row['UF'];
         $cliente->cidade = $row['cidade'];
         $cliente->bairro = $row['bairro'];
-        $cliente->rua = $row['rua'];
+        $cliente->logradouro = $row['logradouro'];
         $cliente->numero = $row['numero'];
     }
     
     function update($cliente){
         $stmt = $this->conn->prepare("UPDATE cliente SET razaosocial = ?, nomefantasia = ?, 
-                CNPJ = ?, CEP = ?, UF = ?, cidade = ?, bairro = ?, rua = ?, numero = ? WHERE idCliente = ?");
+                CNPJ = ?, CEP = ?, UF = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ? WHERE idCliente = ?");
         // Adiciona os dados do cliente no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$cliente->razaoSocial);
         $stmt->bindValue(2,$cliente->nomeFantasia);
@@ -117,7 +117,7 @@
         $stmt->bindValue(5,$cliente->UF);
         $stmt->bindValue(6,$cliente->cidade);
         $stmt->bindValue(7,$cliente->bairro);
-        $stmt->bindValue(8,$cliente->rua);
+        $stmt->bindValue(8,$cliente->logradouro);
         $stmt->bindValue(9,$cliente->numero);
         $stmt->bindValue(10,$cliente->idCliente);
 

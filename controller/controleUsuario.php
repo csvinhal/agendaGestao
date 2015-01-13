@@ -14,11 +14,13 @@
 include_once '../config/functions.php';
 sec_session_start();
 
-if(isset($_GET['operacao'])){
+$operacao = filter_input(INPUT_GET,'operacao', FILTER_SANITIZE_STRING);
+if(isset($operacao)){
     include_once '../model/usuarioDAO.class.php';
     include_once '../config/database.class.php';
+    include_once '../validate/Validate.class.php';
     
-    switch($_GET['operacao']){
+    switch($operacao){
         // Caso seja salvar dados
         case 'salvar':
             if($_POST){
@@ -26,41 +28,67 @@ if(isset($_GET['operacao'])){
                 $database = new Database();
                 $db = $database->getConnection();
                 
-                //Instancia o objeto usuario
-                $usuario = new Usuario($db);
-                
-                //seta as propriedados do usuario
-                $usuario->nome = $_POST['nome'];
-                $usuario->sobrenome = $_POST['sobrenome'];
-                $usuario->email = $_POST['email'];
-                $usuario->senha = hash('sha512', $_POST['senha']);
-                $usuario->idPerfil = $_POST['dlPerfil'];
-               
                 //cria variavel array para armazenar retorno
-                $ret = array();
+                $error = array();
                 
-                $usuarioDAO = new usuarioDAO($db);
+                $nome = filter_input(INPUT_POST,'nome', FILTER_SANITIZE_STRING);
+                $sobrenome = filter_input(INPUT_POST,'sobrenome', FILTER_SANITIZE_STRING);
+                $email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
+                $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+                $papel = filter_input(INPUT_POST,'dlPapel', FILTER_SANITIZE_STRING);
                 
-                //cria o usuário
-                if($usuarioDAO->create($usuario)){   
-                    $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Usuário foi criado com sucesso.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/criar_usuario.php');
-                }else{
-                    $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Não foi possivel criar o usuario.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
+                if(Validate::validarNome($nome) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validateEmail($email) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validarSenha($senha) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                
+                if(count($error) > 0){
+                    $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
                     header('location:../view/criar_usuario.php');
+                }else{
+                    //Instancia o objeto usuario
+                    $usuario = new Usuario($db);
+
+                    //Instancia o objeto usuarioDAO
+                    $usuarioDAO = new usuarioDAO($db);
+                
+                    //seta as propriedados do usuario
+                    $usuario->nome = $nome;
+                    $usuario->sobrenome = $sobrenome;
+                    $usuario->email = $email;
+                    //Seta usuario salta com um valor randomico
+                    $usuario->salt = $usuarioDAO->createSalt();
+                    $usuario->senha = hash('sha512', $senha.$usuario->salt);
+                    $usuario->idPapel = $papel;
+
+                    //cria o usuario
+                    if($usuarioDAO->create($usuario)){
+                        $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Usu&aacute;rio foi criado com sucesso.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/criar_usuario.php');
+                    }else{
+                        $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "N&atilde;o foi poss&iacute;vel criar o usu&aacute;rio.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/criar_usuario.php');
+                    }
                 }
             }
         break;//Fecha case salvar
+        
         case 'update':  
             if($_POST){
                 //Instancia uma nova conexaos
@@ -70,36 +98,59 @@ if(isset($_GET['operacao'])){
                 //Instancia o objeto usuario
                 $usuario = new Usuario($db);
                 
-                //seta as propriedados do usuario
-                $usuario->nome = $_POST['nome'];
-                $usuario->sobrenome = $_POST['sobrenome'];
-                $usuario->email = $_POST['email'];
-                $usuario->idPerfil = $_POST['idPapel'];
-                $usuario->idUsuario = $_GET['idUsuario'];
-               
-                //cria variavel array para armazenar retorno
-                $ret = array();
+                $nome = filter_input(INPUT_POST,'nome', FILTER_SANITIZE_STRING);
+                $sobrenome = filter_input(INPUT_POST,'sobrenome', FILTER_SANITIZE_STRING);
+                $email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
+                $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+                $idPapel = filter_input(INPUT_POST,'idPapel', FILTER_SANITIZE_STRING);
+                $idUsuario = filter_input(INPUT_GET,'idUsuario', FILTER_SANITIZE_NUMBER_INT);
                 
-                $usuarioDAO = new usuarioDAO($db);
-                
-                //cria o usuário
-                if($usuarioDAO->update($usuario)){
-                    $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Usuario foi atualizado.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
-                    $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_usuarios.php');
+                if(Validate::validarNome($nome) !== false){
+                    $error[] = $_SESSION['Mensagem'];
                 }
-                else{
-                    $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                    $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                    $ret[] = "Não foi possível atualizar o usuário.";
-                    $ret[] = "</div>";
-                    $retorno = implode('', $ret);
+                if(Validate::validarSobreNome($sobrenome) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::validateEmail($email) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                
+                if(count($error) > 0){
+                    $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                header('location:../view/view_usuarios.php');
+                    header('location:../view/update_usuario.php?idUsuario='.$usuario->idUsuario);
+                }else{
+                    //seta as propriedados do usuario
+                    $usuario->nome = $nome;
+                    $usuario->sobrenome = $sobrenome;
+                    $usuario->email = $email;
+                    $usuario->idPapel = $idPapel;
+                    $usuario->idUsuario = $idUsuario;
+
+                    //cria variavel array para armazenar retorno
+                    $error = array();
+
+                    $usuarioDAO = new usuarioDAO($db);
+
+                    //cria o usuário
+                    if($usuarioDAO->update($usuario)){
+                        $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "Usu&aacute;rio foi atualizado.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/view_usuarios.php');
+                    }
+                    else{
+                        $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                        $error[] = "N&atilde;o foi poss&iacute;vel atualizar o usu&aacute;rio.";
+                        $error[] = "</div>";
+                        $retorno = implode('', $error);
+                        $_SESSION['Mensagem'] = $retorno;
+                    header('location:../view/view_usuarios.php');
+                    }
                 }
             }
         break;//Fecha case update
@@ -112,23 +163,23 @@ if(isset($_GET['operacao'])){
                 //Instancia o objeto usuario
                 $usuario = new Usuario($db);
                 
-                //Verifica se foram informados o usuário e a senha
+                //Verifica se foram informados o usuario e a senha
                 if(!empty($_POST['login']) || !empty($_POST['senha'])){
                         //seta as propriedados do usuario
                         $uusuario = new Usuario;
-                        $usuario->email = $_POST['login'];
-                        $usuario->senha = hash('sha512', $_POST['senha']);
+                        $usuario->email = filter_input(INPUT_POST,'login', FILTER_SANITIZE_EMAIL);
+                        $usuario->senha = filter_input(INPUT_POST,'senha', FILTER_SANITIZE_STRING);
                         $usuarioDAO = new usuarioDAO($db);
                         $res = $usuarioDAO->logar($usuario);
-                        if($res == true){
-                                header('location:../view/index.php');
+                        if($res === true){
+                            header('Location:../view/index.php');
                         }else{
-                                $_SESSION['Mensagem'] = $_SESSION['Mensagem'];;
-                                header('Location: ../index.php?error=1');
+                            $_SESSION['Mensagem'] = $_SESSION['Mensagem'];
+                            header('Location: ../index.php');
                         }
                 }else{
-                        $_SESSION['Mensagem'] = 'Usuário ou senha não foram preenchidos!';
-                        header('Location: ../index.php?error=1');
+                        $_SESSION['Mensagem'] = 'Usu&aacute;rio ou senha n&atilde;o foram preenchidos';
+                        header('Location: ../index.php');
                 }
             }
         break;//Fecha case logar
@@ -155,22 +206,22 @@ if(isset($_POST['operacao'])){
             //Instancia o objeto usuarioDAO
             $usuarioDAO = new usuarioDAO($db);
             
-            $ret = array();
+            $error = array();
 
             //deleta o usuario
             if($usuarioDAO->delete($usuario)){
-                $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                $ret[] = "O usuário foi deletado com sucesso!";
-                $ret[] = "</div>";
-                $retorno = implode('', $ret);
+                $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $error[] = "O usu&aacute;rio foi deletado com sucesso!";
+                $error[] = "</div>";
+                $retorno = implode('', $error);
                 $_SESSION['Mensagem'] = $retorno;
             }else{
-                $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                $ret[] = "Não foi possível deletar o usuário!";
-                $ret[] = "</div>";
-                $retorno = implode('', $ret);
+                $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $error[] = "N&atilde;o foi poss&iacute;vel deletar o usu&aacute;rio!";
+                $error[] = "</div>";
+                $retorno = implode('', $error);
                 $_SESSION['Mensagem'] = $retorno;
             }
         break;//Fecha case salvar
@@ -178,4 +229,3 @@ if(isset($_POST['operacao'])){
     }
 }
 ?>
-

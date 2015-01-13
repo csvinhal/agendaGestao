@@ -17,6 +17,7 @@ class Usuario {
 	private $sobrenome;
 	private $email;
 	private $senha;
+        private $salt;
 	private $idPapel;
 	
 	// Cria os métodos Getters e Setters
