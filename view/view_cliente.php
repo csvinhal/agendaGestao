@@ -65,14 +65,15 @@ if($num>0){
 
                 echo "<tbody>"; 
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-
+                    include_once '../validate/Validate.class.php';
                     extract($row);
-
                     echo "<tr>";
                         echo "<td class='text-center'>{$idCliente}</td>";
                         echo "<td class='text-center'>{$razaosocial}</td>";
                         echo "<td class='text-center'>{$nomefantasia}</td>";
+                        $CNPJ = Validate::mascara_string("##.###.###/####-##", $CNPJ);
                         echo "<td class='text-center'>{$CNPJ}</td>";
+                        $CEP = Validate::mascara_string("#####-###", $CEP);
                         echo "<td class='text-center'>{$CEP}</td>";
                         echo "<td class='text-center'>{$UF}</td>";
                         echo "<td class='text-center'>{$cidade}</td>";
@@ -100,7 +101,7 @@ if($num>0){
  
 // avisa que nao ha clientes
 else{
-    echo $num."<div>Não foram encontrados clientes.</div>";
+    echo $num."<div>N&atilde;o foram encontrados clientes.</div>";
 }
 ?>
 

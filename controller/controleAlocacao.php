@@ -104,7 +104,7 @@ if(isset($operacao)){
                     $alocacao->horaInicio = '08:00';
                     $alocacao->horaFim = '12:00';
                     for($i = 0; $i<=1; $i++){
-                        //cria o usuÃ¡rio
+                        //cria o usuario
                         if($alocacaoDAO->create($alocacao)){   
                             $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                             $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
