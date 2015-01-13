@@ -1,5 +1,5 @@
 <?php
-$page_title = "Atualizar Usuário";
+$page_title = "Atualizar Usu&aacute;rio";
 include_once "header.php";
 
     if(isset($_SESSION['Mensagem'])){
@@ -42,22 +42,31 @@ include_once "header.php";
     <table class='table table-hover table-responsive table-bordered'>
  
         <tr>
-            <td>Nome</td>
-            <td><input type='text' name='nome' value='<?php echo $usuario->nome; ?>' class='form-control' required></td>
+            <td>Nome:*</td>
+            <td><input type='text' name='nome' value='<?php echo $usuario->nome; ?>' class='form-control' autocomplete="off" maxlength="60" required></td>
         </tr>
  
         <tr>
-            <td>Sobrenome</td>
-            <td><input type='text' name='sobrenome' value='<?php echo $usuario->sobrenome; ?>' class='form-control' required></td>
+            <td>Sobrenome:*</td>
+            <td><input type='text' name='sobrenome' value='<?php echo $usuario->sobrenome; ?>' class='form-control' autocomplete="off" maxlength="60" required></td>
         </tr>
  
         <tr>
-            <td>E-mail</td>
-            <td><input type='text' name='email' value='<?php echo $usuario->email; ?>' class='form-control' required></td>
+            <td>E-mail:*</td>
+            <td><input type='text' name='email' value='<?php echo $usuario->email; ?>' class='form-control' autocomplete="off" maxlength="80" required></td>
+        </tr>
+        
+        <tr>
+            <td>Senha:</td>
+            <td><input type='password' name='senha' class='form-control' autocomplete="off" maxlength="20"></td>
+        </tr>
+        <tr>
+            <td>Confirmar senha:</td>
+            <td><input type='password' name='conSenha' class='form-control' autocomplete="off" maxlength="20"></td>
         </tr>
  
         <tr>
-            <td>Papel</td>
+            <td>Perfil:*</td>
                 <td>
                     <?php
                         include_once '../model/papelDAO.class.php';

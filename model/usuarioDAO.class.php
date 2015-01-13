@@ -150,7 +150,7 @@
     }
     
     function readOne($usuario){
-        $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE idUsuario = ? LIMIT 0,1");
+        $stmt = $this->conn->prepare("SELECT nome, sobrenome, email, idPapel FROM usuario WHERE idUsuario = ? LIMIT 0,1");
         $stmt->bindValue(1, $usuario->idUsuario);
         $stmt->execute();
 
@@ -162,6 +162,15 @@
         $usuario->idPapel = $row['idPapel'];
     }
     
+    function readSalt($usuario){
+        $stmt = $this->conn->prepare("SELECT salt FROM usuario WHERE idUsuario = ? LIMIT 0,1");
+        $stmt->bindValue(1, $usuario->idUsuario);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $usuario->salt = $row['salt'];
+    }
+    
     function update($usuario){
         $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
                  email= ?, idPapel = ? WHERE idUsuario = ?");
@@ -171,6 +180,24 @@
         $stmt->bindValue(3,$usuario->email);
         $stmt->bindValue(4,$usuario->idPapel);
         $stmt->bindValue(5,$usuario->idUsuario);
+
+        // execute the query
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+        function fullUpdate($usuario){
+        $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
+                 email = ?, senha = ?, idPapel = ? WHERE idUsuario = ?");
+        $stmt->bindValue(1,$usuario->nome);
+        $stmt->bindValue(2,$usuario->sobrenome);
+        $stmt->bindValue(3,$usuario->email);
+        $stmt->bindValue(4,$usuario->senha);
+        $stmt->bindValue(5,$usuario->idPapel);
+        $stmt->bindValue(6,$usuario->idUsuario);
 
         // execute the query
         if($stmt->execute()){

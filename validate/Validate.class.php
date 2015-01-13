@@ -65,10 +65,33 @@ class Validate{
         }else if(!preg_match($formato, $NovaSenha)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "A senha deve conter somente letras e números!";
+            $erros[] = "A senha deve conter somente letras e n&uacute;meros!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
+        }else{
+            return false;
+        }
+    }
+    
+    //função para validar se a senha e a confirmação da senha são iguais.
+    public static function confirmaSenha($senha, $conSenha){
+        $erros = array();
+        if($senha !== $conSenha){
+            $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
+            $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+            $erros[] = "A senha e a confirma&ccedil;&atilde;o da senha devem ser iguais!";
+            $erros[] = "</div>";
+            $retorno = implode('', $erros);
+            $_SESSION['Mensagem'] = $retorno;
+        }else{
+            return false;
+        }
+    }
+    
+    public static function verificaVazio($var){
+        if(empty($var)){
+            return true;
         }else{
             return false;
         }
@@ -78,7 +101,7 @@ class Validate{
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "E-mail inválido!";
+            $erros[] = "E-mail inv&aacute;lido!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
@@ -96,14 +119,14 @@ class Validate{
         if(!isset($rz[4])){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "A razao social deve conter pelo menos 4 caracteres!";
+            $erros[] = "A raz&atilde;o social deve conter pelo menos 4 caracteres!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
         }else if(!preg_match($formato, $rz)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "A razao social deve conter somente letras!";
+            $erros[] = "A raz&atilde;o social deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
@@ -120,14 +143,14 @@ class Validate{
         if(!isset($nf[3])){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "O nome social deve conter pelo menos 4 caracteres!";
+            $erros[] = "O nome fantasia deve conter pelo menos 4 caracteres!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
         }else if(!preg_match($formato, $nf)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "O nome social deve conter somente letras!";
+            $erros[] = "O nome fantasia deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
@@ -203,7 +226,7 @@ class Validate{
         if ( $cnpj !== $cnpj_original ) {
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "CNPJ inválido!";
+            $erros[] = "CNPJ inv&aacute;lido!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
@@ -290,14 +313,14 @@ class Validate{
         if(!is_numeric($numero)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "O número do endereço deve conter apenas números!";
+            $erros[] = "O n&uacute;mero do endereço deve conter apenas números!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;            
         }else if(empty($numero)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "O campo número não pode ficar em branco!";
+            $erros[] = "O campo n&uacute;mero n&atilde;o pode ficar em branco!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;

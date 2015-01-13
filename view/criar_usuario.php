@@ -1,6 +1,6 @@
 ﻿<?php
 // set page headers
-$page_title = "Cadastrar Usuário";
+$page_title = "Cadastrar Usu&aacute;rio";
 include_once "header.php";
 
 if(isset($_SESSION['Mensagem'])){
@@ -26,29 +26,46 @@ echo "</div>";
  
         <tr>
             <td>Nome:*</td>
-            <td><input type='text' name='nome' class='form-control' autocomplete="off" maxlength="50" required></td>
+            <td><input type='text' name='nome' class='form-control' autocomplete="off" maxlength="60" required></td>
         </tr>
  
         <tr>
             <td>Sobrenome:*</td>
-            <td><input type='text' name='sobrenome' class='form-control' autocomplete="off" maxlength="50" required></td>
+            <td><input type='text' name='sobrenome' class='form-control' autocomplete="off" maxlength="60" required></td>
         </tr>
         <tr>
             <td>Email:*</td>
-            <td><input type='text' name='email' class='form-control' autocomplete="off" maxlength="100" required></td>
+            <td><input type='text' name='email' class='form-control' autocomplete="off" maxlength="80" required></td>
         </tr>
         <tr>
             <td>Senha:*</td>
             <td><input type='password' name='senha' class='form-control' autocomplete="off" maxlength="20" required></td>
+        </tr>
+        <tr>
+            <td>Confirmar senha:*</td>
+            <td><input type='password' name='conSenha' class='form-control' autocomplete="off" maxlength="20" required></td>
         </tr> 
         <tr>
             <td>Perfil:*</td>
-            <td><select class='form-control' name="dlPapel">
-                        <option value="" selected="selected">Selecione...</option>
-                        <option value="A">Administrador</option>
-                        <option value="P">PMO</option>
-                        <option value="C">Colaborador</option>
-                </select>
+            <td>
+            <?php 
+            include_once '../config/database.class.php';
+            include_once '../model/papelDAO.class.php';
+            
+                $database = new Database();
+                $db = $database->getConnection();
+
+                $papelDAO = new papelDAO($db);
+                $stmt = $papelDAO->read();
+
+                echo "<select class='form-control' name='dlPapel'>";
+                echo "<option selected=\"selected\">Please select...</option>";
+                    while ($row_papel = $stmt->fetch(PDO::FETCH_ASSOC)){
+                        extract($row_papel);
+                        echo "<option value=\"$idPapel\">$descPapel</option>";
+                    }
+                echo "</select>";
+            ?>
             </td>
         </tr>
         <tr>

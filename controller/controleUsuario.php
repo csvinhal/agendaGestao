@@ -35,6 +35,7 @@ if(isset($operacao)){
                 $sobrenome = filter_input(INPUT_POST,'sobrenome', FILTER_SANITIZE_STRING);
                 $email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
                 $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+                $conSenha = filter_input(INPUT_POST, 'conSenha', FILTER_SANITIZE_STRING);
                 $papel = filter_input(INPUT_POST,'dlPapel', FILTER_SANITIZE_STRING);
                 
                 if(Validate::validarNome($nome) !== false){
@@ -44,6 +45,9 @@ if(isset($operacao)){
                     $error[] = $_SESSION['Mensagem'];
                 }
                 if(Validate::validarSenha($senha) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
+                if(Validate::confirmaSenha($senha, $conSenha) !== false){
                     $error[] = $_SESSION['Mensagem'];
                 }
                 
@@ -102,6 +106,7 @@ if(isset($operacao)){
                 $sobrenome = filter_input(INPUT_POST,'sobrenome', FILTER_SANITIZE_STRING);
                 $email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
                 $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+                $conSenha = filter_input(INPUT_POST, 'conSenha', FILTER_SANITIZE_STRING);
                 $idPapel = filter_input(INPUT_POST,'idPapel', FILTER_SANITIZE_STRING);
                 $idUsuario = filter_input(INPUT_GET,'idUsuario', FILTER_SANITIZE_NUMBER_INT);
                 
@@ -114,11 +119,14 @@ if(isset($operacao)){
                 if(Validate::validateEmail($email) !== false){
                     $error[] = $_SESSION['Mensagem'];
                 }
+                if(Validate::confirmaSenha($senha, $conSenha) !== false){
+                    $error[] = $_SESSION['Mensagem'];
+                }
                 
                 if(count($error) > 0){
                     $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/update_usuario.php?idUsuario='.$usuario->idUsuario);
+                    header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
                 }else{
                     //seta as propriedados do usuario
                     $usuario->nome = $nome;
@@ -131,25 +139,45 @@ if(isset($operacao)){
                     $error = array();
 
                     $usuarioDAO = new usuarioDAO($db);
-
-                    //cria o usuário
-                    if($usuarioDAO->update($usuario)){
-                        $error[] = "<div class=\"alert alert-success alert-dismissable\">";
-                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $error[] = "Usu&aacute;rio foi atualizado.";
-                        $error[] = "</div>";
-                        $retorno = implode('', $error);
-                        $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/view_usuarios.php');
-                    }
-                    else{
-                        $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
-                        $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $error[] = "N&atilde;o foi poss&iacute;vel atualizar o usu&aacute;rio.";
-                        $error[] = "</div>";
-                        $retorno = implode('', $error);
-                        $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/view_usuarios.php');
+                        
+                    if(Validate::verificaVazio($senha) === true){
+                        if($usuarioDAO->update($usuario)){
+                            $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                            $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                            $error[] = "Usu&aacute;rio foi atualizado com sucesso.";
+                            $error[] = "</div>";
+                            $retorno = implode('', $error);
+                            $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/view_usuarios.php');
+                        }else{
+                            $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                            $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                            $error[] = "N&atilde;o foi poss&iacute;vel atualizar o usu&aacute;rio.";
+                            $error[] = "</div>";
+                            $retorno = implode('', $error);
+                            $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
+                        }
+                    }else{
+                        $usuarioDAO->readSalt($usuario);
+                        $usuario->senha = hash('sha512', $senha.$usuario->salt);
+                        if($usuarioDAO->fullUpdate($usuario)){
+                            $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                            $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                            $error[] = "Usu&aacute;rio foi atualizado com sucesso.";
+                            $error[] = "</div>";
+                            $retorno = implode('', $error);
+                            $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/view_usuarios.php');
+                        }else{
+                            $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                            $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                            $error[] = "N&atilde;o foi poss&iacute;vel atualizar o usu&aacute;rio.";
+                            $error[] = "</div>";
+                            $retorno = implode('', $error);
+                            $_SESSION['Mensagem'] = $retorno;
+                        header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
+                        }  
                     }
                 }
             }
