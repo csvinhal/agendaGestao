@@ -65,7 +65,7 @@ if(isset($operacao)){
                     if($alocacaoDAO->create($alocacao)){   
                         $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "Alocação foi inserida com sucesso.";
+                        $ret[] = "Aloca&ccedil;&atilde;o foi inserida com sucesso.";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
@@ -73,7 +73,7 @@ if(isset($operacao)){
                     }else{
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "Não foi possivel criar a alocacão.";
+                        $ret[] = "N&atilde;o foi poss&iacute;vel criar a aloca&ccedil;&atilde;o";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
@@ -85,7 +85,7 @@ if(isset($operacao)){
                     if($alocacaoDAO->create($alocacao)){   
                         $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "Alocação foi inserida com sucesso.";
+                        $ret[] = "Aloca&ccedil;&atilde;o foi inserida com sucesso.";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
@@ -93,7 +93,7 @@ if(isset($operacao)){
                     }else{
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "Não foi possivel criar a alocacao.";
+                        $ret[] = "N&atilde;o foi poss&iacute;vel criar a aloca&ccedil;&atilde;o";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
@@ -108,14 +108,14 @@ if(isset($operacao)){
                         if($alocacaoDAO->create($alocacao)){   
                             $ret[] = "<div class=\"alert alert-success alert-dismissable\">";
                             $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                            $ret[] = "Alocação foi inserida com sucesso.";
+                            $ret[] = "Aloca&ccedil;&atilde;o foi inserida com sucesso.";
                             $ret[] = "</div>";
                             $retorno = implode('', $ret);
                             $_SESSION['Mensagem'] = $retorno;
                         }else{
                             $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                             $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                            $ret[] = "Não foi possível criar a alocacão.";
+                            $ret[] = "N&atilde;o foi poss&iacute;vel criar a aloca&ccedil;&atilde;o";
                             $ret[] = "</div>";
                             $retorno = implode('', $ret);
                             $_SESSION['Mensagem'] = $retorno;
@@ -182,7 +182,7 @@ if(isset($operacao)){
                     }else{
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $ret[] = "N&atilde;o foi poss&iacute;vel atualizar a alocac&ccedil;&atilde;o.";
+                        $ret[] = "N&atilde;o foi poss&iacute;vel atualizar a aloca&ccedil;&atilde;o.";
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;

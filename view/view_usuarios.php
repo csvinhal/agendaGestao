@@ -12,10 +12,10 @@ include_once "header.php";
 
 echo "<div class='right-button-margin'>";
     echo "<a href='criar_usuario.php' class='btn btn-default pull-right'>";
-    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usuário</a>";
+    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usuï¿½rio</a>";
 echo "</div>";
 
-//verificar se a pagina recebe parametro URL, pagina default é 1
+//verificar se a pagina recebe parametro URL, pagina default ï¿½ 1
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
 //numero de linhas por paginas
@@ -47,6 +47,7 @@ if($num>0){
                     echo "<button class=\"btn btn-default btn-xs btn-filter\"><span class=\"glyphicon glyphicon-filter\"></span> Filtrar</button>";
                 echo "</div>";
             echo "</div>";
+            
             echo "<table class='table table-hover'>";
                 echo "<thead>";
                     echo "<tr class=\"filters\">";
@@ -92,7 +93,7 @@ if($num>0){
  
 // avisa que nao ha usuarios
 else{
-    echo $num."<div>Não foram encontrados usuários.</div>";
+    echo $num."<div>Nï¿½o foram encontrados usuï¿½rios.</div>";
 }
 ?>
 
@@ -110,7 +111,7 @@ $(document).on('click', '.delete-object', function(){
         }, function(data){
             location.reload();
         }).fail(function() {
-            alert('Não foi possível deletar o usu&aacute;rio.');
+            alert('Nï¿½o foi possï¿½vel deletar o usu&aacute;rio.');
         });
  
     }

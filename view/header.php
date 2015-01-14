@@ -110,9 +110,6 @@ if(login_check() === true):
     echo "</nav>";
     //<!-- container -->
     echo "<div class='container'>";
-        echo "<div class='page-header'>";
-            echo "<h1>{$page_title}</h1>";
-        echo "</div>";
 else:
     header('location: ../error.php');
 endif;

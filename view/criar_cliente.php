@@ -1,6 +1,5 @@
 ﻿<?php
 // set page headers
-$page_title = "Cadastrar Cliente";
 include_once "header.php";
 
 if(isset($_SESSION['Mensagem'])){
@@ -18,98 +17,103 @@ echo "</div>";
 
 <!-- HTML form para cadastrar Cliente -->
 <form action="../controller/controleCliente.php?operacao=salvar" method="post">
-    
-    <table class='table table-hover table-responsive table-bordered'>
-        <tr>
-            <td>Raz&atilde;o Social:*</td>
-            <td><input type='text' name='razaosocial' class='form-control' autocomplete="off" required></td>
-        </tr>
- 
-        <tr>
-            <td>Nome Fantasia:*</td>
-            <td><input type='text' name='nomefantasia' class='form-control' autocomplete="off" required></td>
-        </tr>
-        <tr>
-            <td>CNPJ:*</td>
-            <td><input type='text' name='CNPJ' data-mask='99.999.999/9999-99' class='form-control' autocomplete="off" required></td>
-        </tr>
-        <tr>
-            <td> CEP:* </td> 
-            <td><input type="text" name="cep" data-mask='99.999-999'  id="cep" class='form-control' autocomplete="off" required/>
-            </td>
-        </tr>
-            <!--Caso nao exista o CEP, ira mostrar uma mensagem aqui-->
-            <div id="mensagemErro" class="ocultar"></div>
-            
-            <!--Aqui onde estarao os campos que serao preenchidos-->
-            <div id="boxCampos" class="ocultar">
-                <tr>
-                    <td>UF:*</td>
-                    <td>
-                        <select name="UF" id='uf' class="form-control">
-                            <option value="" selected="selected">Selecione...</option>
-                                <option value="AC">Acre</option>
-                                <option value="AL">Alagoas</option>
-                                <option value="AP">Amapá</option>
-                                <option value="AM">Amazonas</option>
-                                <option value="BA">Bahia</option>
-                                <option value="CE">Cear&aacute;</option>
-                                <option value="DF">Distrito Federal</option>
-                                <option value="ES">Esp&iacute;rito Santo</option>
-                                <option value="GO">Goi&aacute;s</option>
-                                <option value="MA">Maranh&atilde;o</option>
-                                <option value="MT">Mato Grosso</option>
-                                <option value="MS">Mato Grosso do Sul</option>
-                                <option value="MG">Minas Gerais</option>
-                                <option value="PA">Par&aacute;</option>
-                                <option value="PB">Para&iacute;ba</option>
-                                <option value="PR">Paran&aacute;</option>
-                                <option value="PE">Pernambuco</option>
-                                <option value="PI">Piau&iacute;</option>
-                                <option value="RJ">Rio de Janeiro</option>
-                                <option value="RN">Rio Grande do Norte</option>
-                                <option value="RS">Rio Grande do Sul</option>
-                                <option value="RO">Rod&ocirc;nia</option>
-                                <option value="RR">Roraima</option>
-                                <option value="SC">Santa Catarina</option>
-                                <option value="SP">S&atilde;o Paulo</option>
-                                <option value="SE">Sergipe</option>
-                                <option value="TO">Tocantins</option>                
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Cidade:*</td>  
-                    <td><input type="text" name='cidade' id='cidade' class='form-control' autocomplete="off" required /></td>
-                </tr>
-                <tr>
-                    <td>Bairro:*</td>  
-                    <td><input type="text" name='bairro' id='bairro' class='form-control' autocomplete="off" required /></td>
-                </tr>
-                <tr>
-                    <td>Logradouro:*</td>
-                    <td><input type='text' name='logradouro' id='rua' class='form-control' autocomplete="off" required></td>
-                </tr>
-                <tr>
-                    <td>N&uacute;mero:*</td>
-                    <td><input type='text' name='numero' id='numero' class='form-control' autocomplete="off" required></td>
-                </tr>
-                <tr>
-                    <td>Observa&ccedil;&atilde;o:*</td>
-                    <td>
-                        <textarea type="text" name="observacao" class="form-control" autocomplete="off" required></textarea>
-                    </td>
-
-                </tr>
- 
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cadastrar clientes</h3>
             </div>
-            <tr>
-                <td></td>
-                <td>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </td>
-            </tr>
-    </table>
+    
+            <table class='table table-hover'>
+                <tr>
+                    <td>Raz&atilde;o Social:*</td>
+                    <td><input type='text' name='razaosocial' class='form-control' autocomplete="off" required></td>
+                </tr>
+
+                <tr>
+                    <td>Nome Fantasia:*</td>
+                    <td><input type='text' name='nomefantasia' class='form-control' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td>CNPJ:*</td>
+                    <td><input type='text' name='CNPJ' data-mask='99.999.999/9999-99' class='form-control' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td> CEP:* </td> 
+                    <td><input type="text" name="cep" data-mask='99.999-999'  id="cep" class='form-control' autocomplete="off" required/>
+                    </td>
+                </tr>
+                    <!--Caso nao exista o CEP, ira mostrar uma mensagem aqui-->
+                    <div id="mensagemErro" class="ocultar"></div>
+
+                    <!--Aqui onde estarao os campos que serao preenchidos-->
+                    <div id="boxCampos" class="ocultar">
+                        <tr>
+                            <td>UF:*</td>
+                            <td>
+                                <select name="UF" id='uf' class="form-control">
+                                    <option value="" selected="selected">Selecione...</option>
+                                        <option value="AC">Acre</option>
+                                        <option value="AL">Alagoas</option>
+                                        <option value="AP">Amapá</option>
+                                        <option value="AM">Amazonas</option>
+                                        <option value="BA">Bahia</option>
+                                        <option value="CE">Cear&aacute;</option>
+                                        <option value="DF">Distrito Federal</option>
+                                        <option value="ES">Esp&iacute;rito Santo</option>
+                                        <option value="GO">Goi&aacute;s</option>
+                                        <option value="MA">Maranh&atilde;o</option>
+                                        <option value="MT">Mato Grosso</option>
+                                        <option value="MS">Mato Grosso do Sul</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PA">Par&aacute;</option>
+                                        <option value="PB">Para&iacute;ba</option>
+                                        <option value="PR">Paran&aacute;</option>
+                                        <option value="PE">Pernambuco</option>
+                                        <option value="PI">Piau&iacute;</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="RN">Rio Grande do Norte</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                        <option value="RO">Rod&ocirc;nia</option>
+                                        <option value="RR">Roraima</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="SP">S&atilde;o Paulo</option>
+                                        <option value="SE">Sergipe</option>
+                                        <option value="TO">Tocantins</option>                
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Cidade:*</td>  
+                            <td><input type="text" name='cidade' id='cidade' class='form-control' autocomplete="off" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Bairro:*</td>  
+                            <td><input type="text" name='bairro' id='bairro' class='form-control' autocomplete="off" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Logradouro:*</td>
+                            <td><input type='text' name='logradouro' id='rua' class='form-control' autocomplete="off" required></td>
+                        </tr>
+                        <tr>
+                            <td>N&uacute;mero:*</td>
+                            <td><input type='text' name='numero' id='numero' class='form-control' autocomplete="off" required></td>
+                        </tr>
+                        <tr>
+                            <td>Observa&ccedil;&atilde;o:*</td>
+                            <td>
+                                <textarea type="text" name="observacao" class="form-control" autocomplete="off" required></textarea>
+                            </td>
+                        </tr>
+                    </div>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    </div>
 </form>
 <script type="text/javascript">
     $(function(){
