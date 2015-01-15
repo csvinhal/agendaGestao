@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Visualizar Usu&aacute;rios";
 include_once "header.php";
 
@@ -56,6 +56,7 @@ if($num>0){
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Sobrenome\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Email\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Permiss&atilde;o\" disabled></th>";
+                        echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Ativo\" disabled></th>";
                         echo "<th><input type=\"text\" class=\"form-control\" placeholder=\"Gerenciar\" disabled></th>";
                     echo "</tr>";
                 echo "</thead>";
@@ -73,6 +74,13 @@ if($num>0){
                             echo "<td>";
                                 echo $papelDAO->readName($row['idPapel']);
                             echo"</td>";
+                            echo "<td class=\"text-center\">";
+                            if($ativo == TRUE){
+                                echo "Ativado";
+                            }else{
+                                echo "Desativado";
+                            }
+                        echo "</td>";
                             echo "<td class='text-center'>";
                                     // botoes edite e delete
                                     echo "<a href='update_usuario.php?idUsuario={$idUsuario}' class='btn btn-default left-margin'>";
@@ -81,7 +89,6 @@ if($num>0){
                                     echo "<span class='glyphicon glyphicon-trash' ></span> Deletar</a>";
                             echo "</td>";
                         echo "</tr>";
-
                     }
                 echo "</tbody>"; 
             echo "</table>";
@@ -93,7 +100,7 @@ if($num>0){
  
 // avisa que nao ha usuarios
 else{
-    echo $num."<div>N�o foram encontrados usu�rios.</div>";
+    echo $num."<div>N&atilde;o foram encontrados usu&aacute;rios.</div>";
 }
 ?>
 
@@ -111,7 +118,7 @@ $(document).on('click', '.delete-object', function(){
         }, function(data){
             location.reload();
         }).fail(function() {
-            alert('N�o foi poss�vel deletar o usu&aacute;rio.');
+            alert('N&atilde;o foi poss&iacute;vel deletar o usu&aacute;rio.');
         });
  
     }

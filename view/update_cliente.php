@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Atualizar Cliente";
 include_once "header.php";
 

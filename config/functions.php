@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include_once 'psl-config.php';
 include_once 'database.class.php';
 

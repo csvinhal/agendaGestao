@@ -55,14 +55,13 @@ echo "</div>";
                     <?php 
                     include_once '../config/database.class.php';
                     include_once '../model/papelDAO.class.php';
-
                         $database = new Database();
                         $db = $database->getConnection();
 
                         $papelDAO = new papelDAO($db);
                         $stmt = $papelDAO->read();
 
-                        echo "<select class='form-control' name='dlPapel'>";
+                        echo "<select class=\"form-control\" name='dlPapel'>";
                         echo "<option selected=\"selected\">Please select...</option>";
                             while ($row_papel = $stmt->fetch(PDO::FETCH_ASSOC)){
                                 extract($row_papel);
@@ -73,12 +72,26 @@ echo "</div>";
                     </td>
                 </tr>
                 <tr>
+                    <td>Ativo:*</td>
+                    <td>
+                        <div class="radio">
+                            <label class="radio-inline">
+                            <input type="radio" name="ativo" id="ativoSim" value="1" checked>
+                                Sim
+                            </label>
+                            <label class="radio-inline">
+                            <input type="radio" name="ativo" id="ativoNao" value="0">
+                                N&atilde;o
+                            </label>
+                        </div>
+                    </td>
+                </tr> 
+                <tr>
                     <td></td>
                     <td>
                         <button type="submit" class="btn btn-primary">Salvar</button>
                     </td>
                 </tr>
-
             </table>
         </div>
     </div>

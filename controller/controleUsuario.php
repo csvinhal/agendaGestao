@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,6 +37,7 @@ if(isset($operacao)){
                 $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
                 $conSenha = filter_input(INPUT_POST, 'conSenha', FILTER_SANITIZE_STRING);
                 $papel = filter_input(INPUT_POST,'dlPapel', FILTER_SANITIZE_STRING);
+                $ativo = filter_input(INPUT_POST,'ativo', FILTER_SANITIZE_NUMBER_INT);
                 
                 if(Validate::validarNome($nome) !== false){
                     $error[] = $_SESSION['Mensagem'];
@@ -66,6 +67,12 @@ if(isset($operacao)){
                     $usuario->nome = $nome;
                     $usuario->sobrenome = $sobrenome;
                     $usuario->email = $email;
+                    if($ativo == '1'){
+                        $usuario->ativo = TRUE;
+                    }else{
+                        $usuario->ativo = FALSE;
+                    }
+                    
                     //Seta usuario salta com um valor randomico
                     $usuario->salt = $usuarioDAO->createSalt();
                     $usuario->senha = hash('sha512', $senha.$usuario->salt);
@@ -109,6 +116,7 @@ if(isset($operacao)){
                 $conSenha = filter_input(INPUT_POST, 'conSenha', FILTER_SANITIZE_STRING);
                 $idPapel = filter_input(INPUT_POST,'idPapel', FILTER_SANITIZE_STRING);
                 $idUsuario = filter_input(INPUT_GET,'idUsuario', FILTER_SANITIZE_NUMBER_INT);
+                $ativo = filter_input(INPUT_POST,'ativo', FILTER_SANITIZE_NUMBER_INT);
                 
                 if(Validate::validarNome($nome) !== false){
                     $error[] = $_SESSION['Mensagem'];
@@ -134,7 +142,13 @@ if(isset($operacao)){
                     $usuario->email = $email;
                     $usuario->idPapel = $idPapel;
                     $usuario->idUsuario = $idUsuario;
-
+                    
+                    if($ativo == '1'){
+                        $usuario->ativo = TRUE;
+                    }else{
+                        $usuario->ativo = FALSE;
+                    }
+                    
                     //cria variavel array para armazenar retorno
                     $error = array();
 

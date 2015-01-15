@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // the page where this paging is used
 $page_dom = "view_cliente.php";
 include_once '../model/clienteDAO.class.php';

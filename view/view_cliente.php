@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Visualizar clientes";
 include_once "header.php";
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -85,8 +85,8 @@
     
     //Funçao para inserir usuario
     function create($usuario){
-        $stmt = $this->conn->prepare("INSERT INTO usuario(idUsuario, nome, sobrenome, email, senha, salt, idPapel)
-                                        VALUES(null,?,?,?,?,?,?);");
+        $stmt = $this->conn->prepare("INSERT INTO usuario(idUsuario, nome, sobrenome, email, senha, salt, idPapel, ativo)
+                                        VALUES(null,?,?,?,?,?,?,?);");
         // Adiciona os dados do usuario no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$usuario->nome);
         $stmt->bindValue(2,$usuario->sobrenome);
@@ -94,6 +94,7 @@
         $stmt->bindValue(4,$usuario->senha);
         $stmt->bindValue(5,$usuario->salt);
         $stmt->bindValue(6,$usuario->idPapel);
+        $stmt->bindValue(7,$usuario->ativo, PDO::PARAM_BOOL);
         
         // Executa a instrução SQL
         if($stmt->execute()){
@@ -102,6 +103,59 @@
             return false;
         } 
     }
+    
+    //Deleta o usuario
+    function delete($usuario){
+        $stmt = $this->conn->prepare("DELETE FROM usuario WHERE idUsuario = ?;");
+        $stmt->bindValue(1, $usuario->idUsuario);
+
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //Atualiza usuario sem senha
+    function update($usuario){
+        $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
+                 email= ?, idPapel = ?, ativo = ? WHERE idUsuario = ?");
+        // Adiciona os dados do usuario no lugar das interrogações da instrução SQL
+        $stmt->bindValue(1,$usuario->nome);
+        $stmt->bindValue(2,$usuario->sobrenome);
+        $stmt->bindValue(3,$usuario->email);
+        $stmt->bindValue(4,$usuario->idPapel);
+        $stmt->bindValue(5,$usuario->ativo, PDO::PARAM_BOOL);
+        $stmt->bindValue(6,$usuario->idUsuario);
+
+        // execute the query
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //Busca usuarios com senha
+    function fullUpdate($usuario){
+        $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
+                 email = ?, senha = ?, idPapel = ?, ativo = ? WHERE idUsuario = ?");
+        $stmt->bindValue(1,$usuario->nome);
+        $stmt->bindValue(2,$usuario->sobrenome);
+        $stmt->bindValue(3,$usuario->email);
+        $stmt->bindValue(4,$usuario->senha);
+        $stmt->bindValue(5,$usuario->idPapel);
+        $stmt->bindValue(6,$usuario->ativo);
+        $stmt->bindValue(7,$usuario->idUsuario);
+
+        // execute the query
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     
     //busca todos os usuarios
     function search(){
@@ -137,20 +191,8 @@
         return $num;
     }
     
-    //Deleta o usuario
-    function delete($usuario){
-        $stmt = $this->conn->prepare("DELETE FROM usuario WHERE idUsuario = ?;");
-        $stmt->bindValue(1, $usuario->idUsuario);
-
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
     function readOne($usuario){
-        $stmt = $this->conn->prepare("SELECT nome, sobrenome, email, idPapel FROM usuario WHERE idUsuario = ? LIMIT 0,1");
+        $stmt = $this->conn->prepare("SELECT nome, sobrenome, email, idPapel, ativo FROM usuario WHERE idUsuario = ? LIMIT 0,1");
         $stmt->bindValue(1, $usuario->idUsuario);
         $stmt->execute();
 
@@ -160,6 +202,7 @@
         $usuario->sobrenome = $row['sobrenome'];
         $usuario->email = $row['email'];
         $usuario->idPapel = $row['idPapel'];
+        $usuario->ativo = $row['ativo'];
     }
     
     function readSalt($usuario){
@@ -171,44 +214,8 @@
         $usuario->salt = $row['salt'];
     }
     
-    function update($usuario){
-        $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
-                 email= ?, idPapel = ? WHERE idUsuario = ?");
-        // Adiciona os dados do usuario no lugar das interrogações da instrução SQL
-        $stmt->bindValue(1,$usuario->nome);
-        $stmt->bindValue(2,$usuario->sobrenome);
-        $stmt->bindValue(3,$usuario->email);
-        $stmt->bindValue(4,$usuario->idPapel);
-        $stmt->bindValue(5,$usuario->idUsuario);
-
-        // execute the query
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
-        function fullUpdate($usuario){
-        $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
-                 email = ?, senha = ?, idPapel = ? WHERE idUsuario = ?");
-        $stmt->bindValue(1,$usuario->nome);
-        $stmt->bindValue(2,$usuario->sobrenome);
-        $stmt->bindValue(3,$usuario->email);
-        $stmt->bindValue(4,$usuario->senha);
-        $stmt->bindValue(5,$usuario->idPapel);
-        $stmt->bindValue(6,$usuario->idUsuario);
-
-        // execute the query
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     //função para validar login
-    public function logar($usuario){
+    function logar($usuario){
         try{
             $stmt = $this->conn->prepare("SELECT idUsuario, nome, email, senha, salt FROM usuario WHERE email = ? LIMIT 1;");
             $stmt->bindValue(1, $usuario->email);

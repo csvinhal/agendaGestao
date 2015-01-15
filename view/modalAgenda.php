@@ -1,4 +1,4 @@
-<!-- Modal -->
+﻿<!-- Modal -->
 <?php
 include_once '../model/Cliente.class.php';
 include_once '../config/database.class.php';

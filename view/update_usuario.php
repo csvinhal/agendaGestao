@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Atualizar Usu&aacute;rio";
 include_once "header.php";
 
@@ -91,7 +91,35 @@ include_once "header.php";
                         echo "</select>";
                     ?>
                 </td>
+            </tr>
+            <tr>
+                <td>Ativo:*</td>
+                <td>
+                    <div class="radio">
+                        <label class="radio-inline">
+                            <?php
+                                if($usuario->ativo == TRUE){
+                                    echo "<input type=\"radio\" name=\"ativo\" id=\"ativoSim\" value=\"1\" checked>";
+                                }else{
+                                    echo "<input type=\"radio\" name=\"ativo\" id=\"ativoSim\" value=\"1\" >";
+                                }
+                            ?>
+                            Sim
+                        </label>
+                        <label class="radio-inline">
+                            <?php
+                                if($usuario->ativo == FALSE){
+                                    echo "<input type=\"radio\" name=\"ativo\" id=\"ativoNao\" value=\"0\" checked>";
+                                }else{
+                                    echo "<input type=\"radio\" name=\"ativo\" id=\"ativoNao\" value=\"0\" >";
+                                }
+                            ?>
+                            N&atilde;o
+                        </label>
+                    </div>
+                </td>
             </tr> 
+
         <tr>
             <td></td>
             <td>

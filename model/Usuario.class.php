@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,8 +18,9 @@ class Usuario {
 	private $email;
 	private $senha;
         private $salt;
+        private $ativo;
 	private $idPapel;
-	
+        
 	// Cria os métodos Getters e Setters
 	public function __get($atributo){
 		return $this->$atributo;
