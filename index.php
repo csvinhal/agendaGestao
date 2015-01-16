@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Agenda Gest&atilde;o</title>
-  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>

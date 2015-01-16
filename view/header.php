@@ -3,7 +3,7 @@
 <head>
  
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
  
     <title>Agenda Gest&atildeo</title>
@@ -20,12 +20,11 @@
     }
     </style>
     
-
-    
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
- 
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -34,21 +33,23 @@
     <![endif]-->
  
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-
- 
+    <!--<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+    <script src="../js/jquery-1.11.2.min.js"></script>
+    <script src="../js/jquery-migrate-1.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>-->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
     
     <script src="../js/bootstrap-datepicker.js"></script>
     <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
     <script src="../js/filters.js"></script>
-    
+    <link rel="stylesheet" href="../css/calendar.css">
+     
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
+    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">-->
 
     
     

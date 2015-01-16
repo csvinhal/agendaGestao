@@ -1,4 +1,8 @@
 ﻿<!-- Modal -->
+<script src="../js/bootstrap-datepicker.js"></script>
+<script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
+
+
 <?php
 include_once '../model/Cliente.class.php';
 include_once '../config/database.class.php';
@@ -254,6 +258,7 @@ $(document).on('click', '.delete-object', function(){
 $('.modal').on('hidden.bs.modal', function(){
     $(this).removeData('bs.modal');
 });
+
 $(document).ready(function () {
   $('#dataAlocacao').datepicker({
       format: "dd/mm/yyyy",

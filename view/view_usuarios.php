@@ -12,7 +12,7 @@ include_once "header.php";
 
 echo "<div class='right-button-margin'>";
     echo "<a href='criar_usuario.php' class='btn btn-default pull-right'>";
-    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usu�rio</a>";
+    echo "<span class='glyphicon glyphicon-plus' ></span> Criar usu&aacute;rio</a>";
 echo "</div>";
 
 //verificar se a pagina recebe parametro URL, pagina default � 1

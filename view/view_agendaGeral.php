@@ -79,7 +79,7 @@ echo "</div>";
     */
         //Insere a primeira linha Colaborador 
         echo "<tr>";
-            echo "<th rowspan='2' class='text-center info'>";
+            echo "<th rowspan='2' class='text-center info colaboradores'>";
             echo "Colaborador";
             echo "</th>";
                     //Preenche a primeira rowspan com os dias do mês e o nome do mês
@@ -89,12 +89,13 @@ echo "</div>";
                         $f++;
                     }
         echo "</tr>";
+        
         //Preenche a segunda rowspan com os dias por extenso
         echo "<tr>";
             while($firthday <= $n){
                 $dayExtensive = $agendaDAO->getDayExtensive($month, $firthday, $year);
-                echo "<td class='text-center info'><strong>".$dayExtensive;
-                echo "</strong></td>";
+                    echo "<td class='text-center info'><strong>".$dayExtensive;
+                    echo "</strong></td>";   
                 $firthday++;
             }
         echo "</tr>";
@@ -112,7 +113,7 @@ echo "</div>";
     //Preenche a primeira coluna com o nome dos colaboradores
     echo "<tr>";        
         while($usuario = $stmtUsu->fetch(PDO::FETCH_OBJ)){
-            echo "<th rowspan='2' class='text-center'>";
+            echo "<th rowspan='2' class='text-center colaboradores'>";
             echo $usuario->nome;
             echo "</th>";
             
@@ -126,12 +127,12 @@ echo "</div>";
                         $clienteDAO->readOne($cliente);
                         $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
                         if($alocacao->confirmado == 'S'){
-                            echo "<td class='text-center success'>";
+                            echo "<td class='text-center'>";
                             //codifica a descrição da alocação para enviar via get
                             $descricao = urlencode($alocacao->desAlocacao);
                             $periodo = 'M';
                             //chama o modal e seta as variaveis via get
-                            echo "<a data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
+                            echo "<a class=\"confirmado\" data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
                                     . "&idColaborador=$alocacao->idColaborador&dataAlocacao=$dataAloc&descricao=$descricao"
                                     . "&periodo=$periodo&confirma=$alocacao->confirmado&tipAloc=$alocacao->idTipAloc\" data-target=\"#myModal\">";
                                 //imprime o cliente e o tipo de alocacao na tabela
@@ -141,12 +142,12 @@ echo "</div>";
                             echo "</a>";
                             echo "</td>";
                         }else{
-                            echo "<td class='danger text-center'>";
+                            echo "<td class='text-center'>";
                             //codifica a descrição da alocação para enviar via get
                             $descricao = urlencode($alocacao->desAlocacao);
                             $periodo = 'V';
                             //chama o modal e seta as variaveis via get
-                            echo "<a data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
+                            echo "<a class=\"nconfirmado\" data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
                                     . "&idColaborador=$alocacao->idColaborador&dataAlocacao=$dataAloc&descricao=$descricao"
                                     . "&periodo=$periodo&confirma=$alocacao->confirmado&tipAloc=$alocacao->idTipAloc\" data-target=\"#myModal\">";
                                 //imprime o cliente e o tipo de alocacao na tabela    
@@ -157,7 +158,12 @@ echo "</div>";
                         }
                     }
                 }else{
-                    echo "<td class='text-center'>Sem Compromissos</td>";
+                    $dayOfWeek = date('l', mktime(0,0,0,$month, $f, $year));
+                    if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
+                        echo "<td class='text-center info'>Sem Compromissos</td>";
+                    }else{
+                        echo "<td class='text-center'>Sem Compromissos</td>";
+                    }
                 }
                 $f++;
             }
@@ -173,12 +179,12 @@ echo "</div>";
                         $clienteDAO->readOne($cliente);
                         $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
                         if($alocacao->confirmado == 'S'){
-                            echo "<td class='text-center success' >";
+                            echo "<td class='text-center'>";
                             //codifica a descrição da alocação para enviar via get
                             $descricao = urlencode($alocacao->desAlocacao);
                             $periodo = 'V';
                             //chama o modal e seta as variaveis via get
-                            echo "<a data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
+                            echo "<a class=\"confirmado\" data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
                                     . "&idColaborador=$alocacao->idColaborador&dataAlocacao=$dataAloc&descricao=$descricao"
                                     . "&periodo=$periodo&confirma=$alocacao->confirmado&tipAloc=$alocacao->idTipAloc\" data-target=\"#myModal\">";
                                 //imprime o cliente e o tipo de alocacao na tabela
@@ -187,12 +193,12 @@ echo "</div>";
                                 echo "</div>";
                             echo "</td>";
                         }else{
-                            echo "<td class='danger text-center'>";
+                            echo "<td class='text-center'>";
                             //codifica a descrição da alocação para enviar via get
                             $descricao = urlencode($alocacao->desAlocacao);
                             $periodo = 'V';
                             //chama o modal e seta as variaveis via get
-                            echo "<a data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
+                            echo "<a class=\"nconfirmado\" data-toggle=\"modal\" href=\"modalAgenda.php?idCliente=$alocacao->idCliente&data=$alocacao->dataAlocacao"
                                     . "&idColaborador=$alocacao->idColaborador&dataAlocacao=$dataAloc&descricao=$descricao"
                                     . "&periodo=$periodo&confirma=$alocacao->confirmado&tipAloc=$alocacao->idTipAloc\" data-target=\"#myModal\">";
                                 //imprime o cliente e o tipo de alocacao na tabela
@@ -203,7 +209,12 @@ echo "</div>";
                         }
                         }
                     }else{
-                        echo "<td class='text-center'>Sem Compromissos</td>";
+                        $dayOfWeek = date('l', mktime(0,0,0,$month, $f, $year));
+                        if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
+                            echo "<td class='text-center info'>Sem Compromissos</td>";
+                        }else{
+                            echo "<td class='text-center'>Sem Compromissos</td>";
+                        }
                     }
                     $f++;
                 }

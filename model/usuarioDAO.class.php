@@ -45,7 +45,7 @@
         $stmt->execute();
             
         $rs_check = $stmt->fetch();
-        if ($stmt->rowCount() > 5) {
+        if ($stmt->rowCount() >= 5) {
             return true;
         } else {
             return false;
@@ -214,46 +214,47 @@
         $usuario->salt = $row['salt'];
     }
     
+    
     //função para validar login
     function logar($usuario){
         try{
-            $stmt = $this->conn->prepare("SELECT idUsuario, nome, email, senha, salt FROM usuario WHERE email = ? LIMIT 1;");
+            $stmt = $this->conn->prepare("SELECT idUsuario, nome, email, senha, salt, ativo FROM usuario WHERE email = ? LIMIT 1;");
             $stmt->bindValue(1, $usuario->email);
             $stmt->execute();
             
             $rs = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($stmt->rowCount() == 1) {
-                $password = hash('sha512', $usuario->senha . $rs->salt);
-                if($this->checkbrute($rs->idUsuario)){
-                    //Conta bloquada por muitas tentativas acesso
-                    $_SESSION['Mensagem'] = 'Conta bloqueada por mais de 5 tentativas de acesso erroneas.';
-                    return false;
+                $status = $rs->ativo;
+                if ($status == FALSE){
+                    $_SESSION['Mensagem'] = 'Usu&aacute;rio desativado!';
                 }else{
-                    // Verifica se a senha digita corresponde a mesma do banco de dados.
-                    if($password == $rs->senha){
-                        // Se a senha for correta
-                        // Pega a string do browser do usuario.
-                        $user_browser = $_SERVER['HTTP_USER_AGENT'];
-
-                        
-                        $rs->idUsuario = preg_replace("/[^0-9]+/", "", $rs->idUsuario);
-                        $_SESSION['user_id'] = $rs->idUsuario;
-                        $rs->nome = preg_replace("/[^a-zA-Z0-9_\-]+/", 
-                                                                "", 
-                                                                $rs->nome);
-                        $_SESSION['usuario'] = $rs->nome;
-                        $_SESSION['login_string'] = hash('sha512', $rs->senha.$user_browser);
-                        //Logado com sucesso
-                        return true;
+                    $password = hash('sha512', $usuario->senha . $rs->salt);
+                    if($this->checkbrute($rs->idUsuario)){
+                        //Conta bloquada por muitas tentativas acesso
+                        $_SESSION['Mensagem'] = 'Conta bloqueada por mais de 5 tentativas de acesso erroneas.';
+                        return false;
                     }else{
-                        $ret = array();
-                        //Se a senha não for correta salva a tentativa de login falha
-                        if($this->insertAttempts($rs->idUsuario)){
-                            $_SESSION['Mensagem'] = 'Senha inv&aacute;lida!';;                                                        
+                        // Verifica se a senha digita corresponde a mesma do banco de dados.
+                        if($password == $rs->senha){
+                            // Se a senha for correta
+                            // Pega a string do browser do usuario.
+                            $user_browser = $_SERVER['HTTP_USER_AGENT'];
+                            $rs->idUsuario = preg_replace("/[^0-9]+/", "", $rs->idUsuario);
+                            $_SESSION['user_id'] = $rs->idUsuario;
+                            $rs->nome = preg_replace("/[^a-zA-Z0-9_\-]+/","",$rs->nome);
+                            $_SESSION['usuario'] = $rs->nome;
+                            $_SESSION['login_string'] = hash('sha512', $rs->senha.$user_browser);
+                            //Logado com sucesso
+                            return true;
                         }else{
-                            $_SESSION['Mensagem'] = 'N&atilde;o foi poss&iacute;vel realizar a inser&ccedil;&atilde;o da tentativa falha!';
-                        }       
+                            //Se a senha não for correta salva a tentativa de login falha
+                            if($this->insertAttempts($rs->idUsuario)){
+                                $_SESSION['Mensagem'] = 'Senha inv&aacute;lida!';;                                                        
+                            }else{
+                                $_SESSION['Mensagem'] = 'N&atilde;o foi poss&iacute;vel realizar a inser&ccedil;&atilde;o da tentativa falha!';
+                            }       
+                        }
                     }
                 }
             }else{
@@ -263,5 +264,4 @@
             $_SESSION['Mensagem'] = "O seguinte erro ocorreu: ".$e->getMessage();
         }
     }
-    
 }
