@@ -133,7 +133,7 @@ $db = $database->getConnection();
                     <td>Data Alocação:*</td>
                     <td>
                         <div class="form-group has-feedback">
-                            <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" value="<?php echo $data ?>" required>
+                            <input type="text" id="dataAlocacao" name="dataAlocacao" class="form-control" value="<?php echo $data ?>" placeholder="YYY-MM-DD" required>
                             <span class="form-control-feedback glyphicon glyphicon glyphicon glyphicon-calendar" aria-hidden="true"></span>
                             </input>
                         </div>
@@ -261,7 +261,7 @@ $('.modal').on('hidden.bs.modal', function(){
 
 $(document).ready(function () {
   $('#dataAlocacao').datepicker({
-      format: "dd/mm/yyyy",
+      format: "yyyy/mm/dd",
       language: "pt-BR"
   });
 });

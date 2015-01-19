@@ -157,12 +157,17 @@ if(isset($operacao)){
                 $alocacao->confirmado = $confirmado;
                 $alocacao->dataAlocacao = $dataAloc;
                 $alocacao->idUsuario = $_SESSION['user_id'];
-                
+            
                 $ret = array();
                 
                 $alocacaoDAO = new alocacaoDAO($db);
+                if($alocacaoDAO->date_converter($dataAloc) == FALSE){
+                    $alocacao->dataAlocacao = $dataAloc;
+                }else{
+                    $alocacao->dataAlocacao = $alocacaoDAO->date_converter($dataAloc);
+                }
                 
-                $chave->desAlocacao = $_GET['data'];
+                $chave->dataAlocacao = $_GET['data'];
                 $chave->horaInicio = $_GET['horaIni'];
                 $chave->horaFim = $_GET['horaFim'];
                 $chave->idColaborador = $_GET['idCol'];
@@ -178,7 +183,7 @@ if(isset($operacao)){
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_alocacao.php');
+                        header('Location:../view/view_agendaGeral.php');
                     }else{
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -186,7 +191,7 @@ if(isset($operacao)){
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_alocacao.php');
+                        header('Location:../view/view_agendaGeral.php');
                     }
                 }else if($alocacao->periodo == 'V'){
                     $alocacao->horaInicio = '14:00';
@@ -198,7 +203,7 @@ if(isset($operacao)){
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_alocacao.php');
+                        header('Location:../view/view_agendaGeral.php');
                     }else{
                         $ret[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $ret[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -206,7 +211,7 @@ if(isset($operacao)){
                         $ret[] = "</div>";
                         $retorno = implode('', $ret);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_alocacao.php');
+                        header('Location:../view/view_agendaGeral.php');
                     }
                 }
             }

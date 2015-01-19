@@ -6,7 +6,7 @@ class Validate{
     public static function validarNome($nome){
             $erros = array();
             $NovoNome = str_replace(' ', '', $nome);
-            $formato='/^[A-Za-z]+(\s[A-Za-z]+)*$/';
+            //$formato='/^[A-Za-z]+(\s[A-Za-z]+)*$/';
             if(!isset($NovoNome[3])){
                 $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
                 $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -14,14 +14,14 @@ class Validate{
                 $erros[] = "</div>";
                 $retorno = implode('', $erros);
                 $_SESSION['Mensagem'] = $retorno;
-            }else if(!preg_match($formato, $NovoNome)){
+            }/*else if(!preg_match($formato, $NovoNome)){
                 $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
                 $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                 $erros[] = "O nome deve conter somente letras!";
                 $erros[] = "</div>";
                 $retorno = implode('', $erros);
                 $_SESSION['Mensagem'] = $retorno;
-            }else{
+            }*/else{
                 return false;
             }
     }
@@ -38,14 +38,14 @@ class Validate{
                 $erros[] = "</div>";
                 $retorno = implode('', $erros);
                 $_SESSION['Mensagem'] = $retorno;
-            }else if(!preg_match($formato, $snome)){
+            /*}else if(!preg_match($formato, $snome)){
                 $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
                 $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                 $erros[] = "O sobrenome deve conter somente letras!";
                 $erros[] = "</div>";
                 $retorno = implode('', $erros);
                 $_SESSION['Mensagem'] = $retorno;
-            }else{
+            */}else{
                 return false;
             }
     }
@@ -62,14 +62,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $NovaSenha)){
+        /*}else if(!preg_match($formato, $NovaSenha)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "A senha deve conter somente letras e n&uacute;meros!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return false;
         }
     }
@@ -133,14 +133,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $rz)){
+        /*}else if(!preg_match($formato, $rz)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "A raz&atilde;o social deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return false;
         }
     }
@@ -157,14 +157,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $nf)){
+        /*}else if(!preg_match($formato, $nf)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "O nome fantasia deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return false;
         }
     }
@@ -257,14 +257,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $ncidade)){
+        /*}else if(!preg_match($formato, $ncidade)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "A cidade deve conter somente letras!".$ncidade;
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return false;
         }
     }
@@ -281,14 +281,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $NovoBairro)){
+        /*}else if(!preg_match($formato, $NovoBairro)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "O bairro deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return false;
         }
     }
@@ -305,14 +305,14 @@ class Validate{
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else if(!preg_match($formato, $nlogradouro)){
+        /*}else if(!preg_match($formato, $nlogradouro)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
             $erros[] = "O logradouro deve conter somente letras!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;
-        }else{
+        */}else{
             return FALSE;
         }
     }

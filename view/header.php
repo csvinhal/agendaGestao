@@ -62,7 +62,7 @@ header('Content-Type: text/html; charset=ISO-8859-1');
 include_once '../config/functions.php';
 sec_session_start();
 if(login_check() === true): 
-    echo "<nav class='navbar navbar-default' role='navigation'>";
+    echo "<nav class='navbar navbar-default navbar-fixed-top' role='navigation'>";
         echo "<div class='container-fluid'>";
             //<!-- Brand and toggle get grouped for better mobile display -->
             echo "<div class='navbar-header'>";
