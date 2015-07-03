@@ -1,7 +1,8 @@
-﻿<?php
+<?php
 include './config/functions.php';
+
 sec_session_start();
-// Limpa todas as seções 
+// Limpa todas as secoes 
 $_SESSION = array();
  
 //Recebe parametros do cookie 
@@ -14,8 +15,8 @@ setcookie(session_name(),
         $params["domain"], 
         $params["secure"], 
         $params["httponly"]);
- 
-//Desrtoi a sessão 
+
+//Desrtoi a sessao 
 session_destroy();
 header('Location: ./index.php');
 ?>

@@ -1,4 +1,4 @@
-Ôªø<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,7 +11,6 @@
  *
  * @author Cristiano
  */
-
 include_once '../config/functions.php';
 sec_session_start();
 
@@ -45,23 +44,18 @@ if(isset($operacao)){
                 $numero = filter_input(INPUT_POST,'numero', FILTER_SANITIZE_NUMBER_INT);
                 $observacao = filter_input(INPUT_POST,'observacao', FILTER_SANITIZE_STRING);
                 
-                if(Validate::validarRazaoSocial($razaosocial) !== false){
-                    $error[] = $_SESSION['Mensagem'];
-                }
-                if(Validate::validarNomeFantasia($nomefantasia) !== false){
-                    $error[] = $_SESSION['Mensagem'];
-                }
-                if(Validate::validarLogradouro($logradouro) !== false){
-                        $error[] = $_SESSION['Mensagem'];
-                }
-                if(Validate::validarNumero($numero) !== false){
-                        $error[] = $_SESSION['Mensagem'];
-                }
-
+                /*
+                 * Aqui ficam as validaÁıes
+                 */
                 if(count($error) > 0){
                     $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/criar_cliente.php');
+                    
+                    if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/criar_cliente.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/criar_cliente.php');
+                    }
                 }else{
                     //Instancia o objeto cliente
                     $cliente = new Cliente($db);
@@ -89,15 +83,25 @@ if(isset($operacao)){
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/criar_cliente.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/criar_cliente.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/criar_cliente.php');
+                        }
                     }else{
                         $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $error[] = "N√£o foi possivel criar o cliente.";
+                        $error[] = "N„o foi possivel criar o cliente.";
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_cliente.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/criar_cliente.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/criar_cliente.php');
+                        }
                     }
                 }
             }
@@ -122,13 +126,7 @@ if(isset($operacao)){
                 $numero = filter_input(INPUT_POST,'numero', FILTER_SANITIZE_NUMBER_INT);
                 $idCliente = filter_input(INPUT_GET,'idCliente', FILTER_SANITIZE_NUMBER_INT);
                 
-                if(Validate::validarRazaoSocial($razaosocial) !== false){
-                    $error[] = $_SESSION['Mensagem'];
-                }
-                if(Validate::validarNomeFantasia($nomefantasia) !== false){
-                    $error[] = $_SESSION['Mensagem'];
-                }
-                if(Validate::validarCNPJ($CNPJ) !== false){
+                /*if(Validate::validarCNPJ($CNPJ) !== false){
                         $error[] = $_SESSION['Mensagem'];
                 }
                 if(Validate::validarCidade($cidade) !== false){
@@ -142,7 +140,7 @@ if(isset($operacao)){
                 }
                 if(Validate::validarNumero($numero) !== false){
                         $error[] = $_SESSION['Mensagem'];
-                }
+                }*/
                 
                 if(count($error) > 0){
                     $retorno = implode('', $error);
@@ -174,16 +172,26 @@ if(isset($operacao)){
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/view_cliente.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/view_cliente.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/view_cliente.php');
+                        }
                     }
                     else{
                         $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                        $error[] = "N√£o foi poss√≠vel atualizar o cliente.";
+                        $error[] = "N„o foi possÌvel atualizar o cliente.";
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/view_cliente.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/view_cliente.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/view_cliente.php');
+                        }
                     }
                 }
             }
@@ -202,22 +210,33 @@ if(isset($_POST['operacao'])){
             $database = new Database();
             $db = $database->getConnection();
 
+            include_once '../model/Cliente.class.php';
             //Instancia o objeto cliente
             $cliente = new Cliente($db);
 
-            //Seta o cliente que ser√° deletado
+            //Seta o cliente que ser· deletado
             $cliente->idCliente = $_POST['object_id'];
             
             //Instancia o objeto clienteDAO
             $clienteDAO = new clienteDAO($db);
+            
+            $error = array();
 
             //deleta o cliente
             if($clienteDAO->delete($cliente)){
-                $_SESSION['Mensagem'] = "O cliente foi deletado com sucesso!";
-                header('location:../view/view_cliente.php');
+                $error[] = "<div class=\"alert alert-success alert-dismissable\">";
+                $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $error[] = "O cliente foi deletado com sucesso!";
+                $error[] = "</div>";
+                $retorno = implode('', $error);
+                $_SESSION['Mensagem'] = $retorno;
             }else{
-                $_SESSION['Mensagem'] = "N√£o foi poss√≠vel deletar o cliente.";
-                header('location:../view/view_cliente.php');
+                $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
+                $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                $error[] = "N&atilde;o foi poss&iacute;vel deletar o cliente.";
+                $error[] = "</div>";
+                $retorno = implode('', $error);
+                $_SESSION['Mensagem'] = $retorno;
             }
         break;//Fecha case salvar
     

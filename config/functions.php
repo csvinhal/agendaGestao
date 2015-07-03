@@ -1,42 +1,43 @@
-﻿<?php
+<?php
 include_once 'psl-config.php';
-include_once 'database.class.php';
+include_once 'database.class.php'; 
 
 function sec_session_start() {
     $session_name = 'sec_session_id';   //Seta um nome aleatorio para a sessao
     $secure = SECURE;
-    // Impedir que o JavaScript acesso o ID da sessão
-    $httponly = true;
-    // Forca a sessão a somente utilizar cookies
-    if (ini_set('session.use_only_cookies', 1) === FALSE) {
-        header("Location: ../error.php?err=Nao foi possivel iniciar uma sessao segura (ini_set)");
-        exit();
-    }
-    //Recebe os atuais parametros do cookies.
-    $cookieParams = session_get_cookie_params();
-    session_set_cookie_params($cookieParams["lifetime"],
-        $cookieParams["path"], 
-        $cookieParams["domain"], 
-        $secure,
-        $httponly);
     
-    //Seta o nome da sessao.
-    session_name($session_name);
-    
-    session_start();            // Inicia a sessao 
-    session_regenerate_id();    //Regenera a sessao, deleta a antiga. 
+    //Certificar que aa cookie da sessao nao esta acessivel via javascript.
+        $httponly = true;
+
+    // Forca a sessao a usar somente cookies, sem variaveis URL.
+        if (ini_set('session.use_only_cookies', 1) === FALSE) {
+            header("Location: ../error.php?err=Nao foi possivel iniciar uma sessao segura (ini_set)");
+            exit();
+        }
+        //Recebe os atuais parametros do cookies.
+        $cookieParams = session_get_cookie_params();
+        // Seta os parametros
+        session_set_cookie_params($cookieParams["lifetime"], $cookieParams["path"], $cookieParams["domain"], $secure, $httponly); 
+        $time = time()+3600;
+        session_set_cookie_params($time);
+        // Troca o nome da sessao 
+        session_name($session_name);
+        // Starta a sessao
+        session_start();
+        // Essa linha regenera a sessao e deleta a antiga. 
+        // E tamb�m gera uma nova criptografia no banco de dados. 
+        session_regenerate_id(true); 
 }
 
 //verifica se o usuario ja nao se encontra logado
 function login_check() {
-    include_once '../model/usuarioDAO.class.php';
+    include_once dirname(__FILE__).'/../model/usuarioDAO.class.php';
     $database = new Database();
     $db = $database->getConnection();
     $usuarioDAO = new usuarioDAO($db);
-
+    
     //Verifica se as sessoes estao setadas
     if(isset($_SESSION['user_id'], $_SESSION['usuario'], $_SESSION['login_string'])) {
-        $_SESSION['teste'] = "DENTRO ISSET";
 
         $user_id = $_SESSION['user_id'];
         $login_string = $_SESSION['login_string'];
@@ -51,7 +52,6 @@ function login_check() {
 
             if ($login_check === $login_string) {
                //Usuario logado
-                $_SESSION['teste'] = "Usuario Logado";
                 return true;
             } else {
                 //Nao logado

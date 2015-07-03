@@ -1,8 +1,8 @@
-ï»¿<?php
+<?php
 
 class Validate{
     
-    // Cria uma funÃ§Ã£o para validar o nome
+    // Cria uma função para validar o nome
     public static function validarNome($nome){
             $erros = array();
             $NovoNome = str_replace(' ', '', $nome);
@@ -26,7 +26,7 @@ class Validate{
             }
     }
     
-    // Cria uma funÃ§Ã£o para validar o sobrenome
+    // Cria uma função para validar o sobrenome
     public static function validarSobreNome($sobrenome){
             $erros = array();
             $snome = str_replace(' ', '', $sobrenome);
@@ -50,7 +50,7 @@ class Validate{
             }
     }
     
-    // Cria uma funÃ§Ã£o para validar a senha
+    // Cria uma função para validar a senha
     public static function validarSenha($senha){
         $erros = array();
         $NovaSenha = str_replace(' ', '', $senha);
@@ -74,7 +74,7 @@ class Validate{
         }
     }
     
-    //funÃ§Ã£o para validar se a senha e a confirmaÃ§Ã£o da senha sÃ£o iguais.
+    //função para validar se a senha e a confirmação da senha são iguais.
     public static function confirmaSenha($senha, $conSenha){
         $erros = array();
         if($senha !== $conSenha){
@@ -121,7 +121,7 @@ class Validate{
     }
     
     
-    // Cria uma funÃ§Ã£o para validar a razaosocial
+    // Cria uma função para validar a razaosocial
     public static function validarRazaoSocial($razaosocial){
         $erros = array();
         $rz = str_replace(' ', '', $razaosocial);
@@ -145,7 +145,7 @@ class Validate{
         }
     }
     
-    // Cria uma funÃ§Ã£o para validar o nome fantasia
+    // Cria uma função para validar o nome fantasia
     public static function validarNomeFantasia($nomefantasia){
         $erros = array();
         $nf = str_replace(' ', '', $nomefantasia);
@@ -170,69 +170,69 @@ class Validate{
     }
     
     
-    //cria funÃ§Ã£o para validar o CNPJ
+    //cria função para validar o CNPJ
     public static function validarCNPJ( $cnpj ) {
         $erros = array();
-        // Deixa o CNPJ com apenas nÃºmeros
+        // Deixa o CNPJ com apenas números
         $cnpj = preg_replace( '/[^0-9]/', '', $cnpj );
 
-        // Garante que o CNPJ Ã© uma string
+        // Garante que o CNPJ é uma string
         $cnpj = (string)$cnpj;
 
         // O valor original
         $cnpj_original = $cnpj;
 
-        // Captura os primeiros 12 nÃºmeros do CNPJ
+        // Captura os primeiros 12 números do CNPJ
         $primeiros_numeros_cnpj = substr( $cnpj, 0, 12 );
 
         /**
-         * MultiplicaÃ§Ã£o do CNPJ
+         * Multiplicação do CNPJ
          *
          * @param string $cnpj Os digitos do CNPJ
-         * @param int $posicoes A posiÃ§Ã£o que vai iniciar a regressÃ£o
+         * @param int $posicoes A posição que vai iniciar a regressão
          * @return int O
          *
          */
         function multiplica_cnpj( $cnpj, $posicao = 5 ) {
-            // VariÃ¡vel para o cÃ¡lculo
+            // Variável para o cálculo
             $calculo = 0;
 
-            // LaÃ§o para percorrer os item do cnpj
+            // Laço para percorrer os item do cnpj
             for ( $i = 0; $i < strlen( $cnpj ); $i++ ) {
-                    // CÃ¡lculo mais posiÃ§Ã£o do CNPJ * a posiÃ§Ã£o
+                    // Cálculo mais posição do CNPJ * a posição
                     $calculo = $calculo + ( $cnpj[$i] * $posicao );
 
-                    // Decrementa a posiÃ§Ã£o a cada volta do laÃ§o
+                    // Decrementa a posição a cada volta do laço
                     $posicao--;
 
-                    // Se a posiÃ§Ã£o for menor que 2, ela se torna 9
+                    // Se a posição for menor que 2, ela se torna 9
                     if ( $posicao < 2 ) {
                             $posicao = 9;
                     }
             }
-            // Retorna o cÃ¡lculo
+            // Retorna o cálculo
             return $calculo;
         }
 
-        // Faz o primeiro cÃ¡lculo
+        // Faz o primeiro cálculo
         $primeiro_calculo = multiplica_cnpj( $primeiros_numeros_cnpj );
 
-        // Se o resto da divisÃ£o entre o primeiro cÃ¡lculo e 11 for menor que 2, o primeiro
-        // DÃ­gito Ã© zero (0), caso contrÃ¡rio Ã© 11 - o resto da divisÃ£o entre o cÃ¡lculo e 11
+        // Se o resto da divisão entre o primeiro cálculo e 11 for menor que 2, o primeiro
+        // Dígito é zero (0), caso contrário é 11 - o resto da divisão entre o cálculo e 11
         $primeiro_digito = ( $primeiro_calculo % 11 ) < 2 ? 0 :  11 - ( $primeiro_calculo % 11 );
 
-        // Concatena o primeiro dÃ­gito nos 12 primeiros nÃºmeros do CNPJ
-        // Agora temos 13 nÃºmeros aqui
+        // Concatena o primeiro dígito nos 12 primeiros números do CNPJ
+        // Agora temos 13 números aqui
         $primeiros_numeros_cnpj .= $primeiro_digito;
 
-        // O segundo cÃ¡lculo Ã© a mesma coisa do primeiro, porÃ©m, comeÃ§a na posiÃ§Ã£o 6
+        // O segundo cálculo é a mesma coisa do primeiro, porém, começa na posição 6
         $segundo_calculo = multiplica_cnpj( $primeiros_numeros_cnpj, 6 );
         $segundo_digito = ( $segundo_calculo % 11 ) < 2 ? 0 :  11 - ( $segundo_calculo % 11 );
 
-        // Concatena o segundo dÃ­gito ao CNPJ
+        // Concatena o segundo dígito ao CNPJ
         $cnpj = $primeiros_numeros_cnpj . $segundo_digito;
 
-        // Verifica se o CNPJ gerado Ã© idÃªntico ao enviado
+        // Verifica se o CNPJ gerado é idêntico ao enviado
         if ( $cnpj !== $cnpj_original ) {
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -245,7 +245,7 @@ class Validate{
         }
     }
     
-    // Cria uma funÃ§Ã£o para validar a cidade
+    // Cria uma função para validar a cidade
     public static function validarCidade($cidade){
         $erros = array();
         $ncidade = str_replace(' ', '', $cidade);
@@ -269,7 +269,7 @@ class Validate{
         }
     }
     
-    // Cria uma funÃ§Ã£o para validar o bairro
+    // Cria uma função para validar o bairro
     public static function validarBairro($bairro){
         $erros = array();
         $NovoBairro = str_replace(' ', '', $bairro);
@@ -293,7 +293,7 @@ class Validate{
         }
     }
     
-    // Cria uma funÃ§Ã£o para validar o logradouro
+    // Cria uma função para validar o logradouro
     public static function validarLogradouro($logradouro){
         $erros = array();
         $nlogradouro =  str_replace(' ', '', $logradouro);
@@ -317,13 +317,13 @@ class Validate{
         }
     }
     
-    //Cria uma funÃ§Ã£o para validar o logradouro
+    //Cria uma função para validar o logradouro
     public static function validarNumero($numero){
         $erros = array();
         if(!is_numeric($numero)){
             $erros[] = "<div class=\"alert alert-danger alert-dismissable\">";
             $erros[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-            $erros[] = "O n&uacute;mero do endereÃ§o deve conter apenas nÃºmeros!";
+            $erros[] = "O n&uacute;mero do endereço deve conter apenas números!";
             $erros[] = "</div>";
             $retorno = implode('', $erros);
             $_SESSION['Mensagem'] = $retorno;            

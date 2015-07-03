@@ -1,12 +1,12 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
  
-    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
  
-    <title>Agenda Gest&atilde;o - Error</title>
+    <title>Agenda Gest&atildeo</title>
  
     <!-- some custom CSS -->
     <style>
@@ -19,13 +19,12 @@
         overflow: hidden;
     }
     </style>
- 
+    
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
- 
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -34,30 +33,32 @@
     <![endif]-->
  
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
- 
+    <!--<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+    <script src="./js/jquery-1.11.2.min.js"></script>
+    <script src="./js/jquery-migrate-1.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <!-- Latest compiled and minified JavaScript -->
-    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    
-    <script src="../js/bootstrap-datepicker.js"></script>
-    <script src="../js/locales/bootstrap-datepicker.pt-BR.js"></script>
-    
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js"></script>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>-->
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
     
+    <!-- JavaScript para o datapicker-->
+    <script src="./js/bootstrap-datepicker.js"></script>
+    <script src="./js/locales/bootstrap-datepicker.pt-BR.js"></script>
     
+    <!-- JavaScript para os filtros nas visualizacoes dos dados -->
+    <script src="./js/filters.js"></script>
+    <!-- JavaScript com as funcoes basicas -->
+    <script src="./js/functions.js"></script>
+    <!-- CSS geral da agenda -->
+    <link rel="stylesheet" href="./css/calendar.css">
 </head>
 <body>
 <div class='container'>
     
 <?php
-	include_once './config/functions.php';
+    include_once './config/functions.php';
     sec_session_start();
 	
     echo "<div class=\"alert alert-danger alert-dismissable\">";

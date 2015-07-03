@@ -1,0 +1,65 @@
+.left-margin{margin:0 .5em 0 0;}
+.right-button-margin{margin: 0 0 1em 0;overflow: hidden;}
+
+html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed,figure, figcaption, footer, header, hgroup,menu, nav, output, ruby, section, summary,time, mark, audio, video {margin: 0;padding: 0;border: 0;font-size: 100%;vertical-align: baseline;font-family: Calibri;font-size: 11px;}
+table {border-collapse: collapse;border-spacing: 0;font-family: Calibri;font-size: 11px;}
+.colaboradores{font-weight: bold;}
+.destaque{color: #ffffff;background-color: #9a9aff;}    
+td.ferias{background-color: #ffffcc;}
+td.feriado{background-color: #cccccc;}
+td.folga{background-color: #ccffcc;}
+.bloqueado{color: #ffffff;background-color: #006699;}
+
+.preenchimento{
+    color: #000;
+    background-color: #a9d4ff;
+}
+
+a.confirmado:hover{
+    text-decoration: none;
+    color: #000;
+}
+
+a.confirmado:visited{
+    text-decoration: none;
+    color: #000;
+}
+
+a.confirmado:link{
+    text-decoration: none;
+    color: #000;
+}
+
+a.confirmado:active{
+    text-decoration: none;
+    color: #000;
+}
+
+.nconfirmado:link{
+    text-decoration: none;
+    color: #ff0033;
+}
+
+a.nconfirmado:hover{
+    text-decoration: none;
+    color: #ff0033;
+} 
+
+a.nconfirmado:visited{
+    text-decoration: none;
+    color:#ff0033;
+}
+
+a.nconfirmado:active{
+    text-decoration: none;
+    color:#ff0033;
+}
+
+.datepicker{
+z-index: 10000 !important;
+}
+
+div.tooltip-inner {
+    max-width: 500px;
+    white-space: pre-wrap;
+}

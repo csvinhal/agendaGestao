@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,14 +15,14 @@ class Papel {
 	private $idPapel;
 	private $descPapel;
 	
-	// Cria os mÃ©todos Getters e Setters
+	// Cria os métodos Getters e Setters
 	public function __get($atributo){
 		return $this->$atributo;
 	}
 	public function __set($atributo, $valor){
 		$this->$atributo=$valor;
 	}
-	// Cria  a funÃ§Ã£o toString da classe
+	// Cria  a função toString da classe
 	public function __toString(){
 		return $this->nome;
 	}

@@ -17,31 +17,75 @@ time, mark, audio, video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+  font-family: Calibri;
+  font-size: 13px;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  white-space: nowrap;
-}
+//table {
+//  border-collapse: collapse;
+//  border-spacing: 0;
+//  padding: 0;
+//  margin: 0;
+//  white-space: nowrap;
+//  color: #000
+//}
+
+//.table { border: 1px solid #000; }
+//.table thead > tr > th { border-bottom: none; }
+//.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td { border: 1px solid #000; }
 
 .colaboradores{
     font-weight: bold;
 }
 
-.confirmado{
-    text-decoration: none;
+.destaque{
+    color: #ffffff;
+    background-color: #9a9aff;
+}
+
+.bloqueado{
+    color: #ffffff;
+    background-color: #006699;
+}
+
+.preenchimento{
+    color: #000;
+    background-color: #a9d4ff;
+}
+
+td.ferias{
+    background-color: #ffffcc;
+}
+
+td.feriado{
+    background-color: #cccccc;
+}
+
+td.folga{
+    background-color: #ccffcc;
 }
 
 a.confirmado:hover{
     text-decoration: none;
+    color: #000;
 }
 
 a.confirmado:visited{
     text-decoration: none;
+    color: #000;
 }
 
-.nconfirmado{
+a.confirmado:link{
+    text-decoration: none;
+    color: #000;
+}
+
+a.confirmado:active{
+    text-decoration: none;
+    color: #000;
+}
+
+.nconfirmado:link{
     text-decoration: none;
     color: #ff0033;
 }
@@ -53,29 +97,19 @@ a.nconfirmado:hover{
 
 a.nconfirmado:visited{
     text-decoration: none;
-    color:#ffffffff;
+    color:#ff0033;
 }
 
-.navbar-mastered {
-  background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%);
-  background-image:      -o-linear-gradient(top, #fff 0%, #f8f8f8 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8));
-  background-image:         linear-gradient(to bottom, #fff 0%, #f8f8f8 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-  background-repeat: repeat-x;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 5px rgba(0, 0, 0, .075);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 5px rgba(0, 0, 0, .075);
+a.nconfirmado:active{
+    text-decoration: none;
+    color:#ff0033;
 }
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .active > a {
-  background-image: -webkit-linear-gradient(top, #dbdbdb 0%, #e2e2e2 100%);
-  background-image:      -o-linear-gradient(top, #dbdbdb 0%, #e2e2e2 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#dbdbdb), to(#e2e2e2));
-  background-image:         linear-gradient(to bottom, #dbdbdb 0%, #e2e2e2 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdbdbdb', endColorstr='#ffe2e2e2', GradientType=0);
-  background-repeat: repeat-x;
-  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
-          box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
+
+.datepicker{
+z-index: 10000 !important;
+}
+
+div.tooltip-inner {
+    max-width: 500px;
+    white-space: pre-wrap;
 }

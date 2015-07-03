@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,19 +11,18 @@
  *
  * @author Cristiano
  */
-    include_once '../config/database.class.php';
     include_once 'Usuario.class.php';
 
     class usuarioDAO {
     
-    // Cria um atributo chamado conexao para armazenar uma instÃ¢ncia da conexÃ£o
+    // Cria um atributo chamado conexao para armazenar uma instância da conexão
     private $conn;
 
-    /* Cria um mÃ©todo construtor para armazenar a instÃ¢ncia da conexÃ£o na
+    /* Cria um método construtor para armazenar a instância da conexão na
      * No atributo conexao
     */
     public function __construct($db){
-			// Armazena a instÃ¢ncia da conexao no atributo conexao
+			// Armazena a instância da conexao no atributo conexao
 			$this->conn = $db;
     }
     
@@ -35,6 +34,7 @@
     
     //Verifica se foi realizado mais de 5 tentativas de acesso
     function checkbrute($user_id) {
+        date_default_timezone_set('America/Sao_Paulo');
         //Pega o timestamp do momento
         $now = time();  
         $valid_attempts = $now - (2 * 60 * 60);
@@ -70,7 +70,7 @@
         }
     }
     
-    //FunÃ§Ã£o para retornar a senha do usuario
+    //Função para retornar a senha do usuario
     function searchPass($user_id){
         $stmt = $this->conn->prepare("SELECT senha FROM usuario WHERE idUsuario = ? LIMIT 0,1");
         $stmt->bindValue(1, $user_id);
@@ -83,20 +83,20 @@
         }
     }
     
-    //FunÃ§ao para inserir usuario
+    //Funçao para inserir usuario
     function create($usuario){
         $stmt = $this->conn->prepare("INSERT INTO usuario(idUsuario, nome, sobrenome, email, senha, salt, idPapel, ativo)
                                         VALUES(null,?,?,?,?,?,?,?);");
-        // Adiciona os dados do usuario no lugar das interrogaÃ§Ãµes da instruÃ§Ã£o SQL
+        // Adiciona os dados do usuario no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$usuario->nome);
         $stmt->bindValue(2,$usuario->sobrenome);
         $stmt->bindValue(3,$usuario->email);
         $stmt->bindValue(4,$usuario->senha);
         $stmt->bindValue(5,$usuario->salt);
         $stmt->bindValue(6,$usuario->idPapel);
-        $stmt->bindValue(7,$usuario->ativo, PDO::PARAM_BOOL);
+        $stmt->bindValue(7,$usuario->ativo);
         
-        // Executa a instruÃ§Ã£o SQL
+        // Executa a instrução SQL
         if($stmt->execute()){
             return true;
         }else{
@@ -120,12 +120,12 @@
     function update($usuario){
         $stmt = $this->conn->prepare("UPDATE usuario SET nome = ?, sobrenome = ?,
                  email= ?, idPapel = ?, ativo = ? WHERE idUsuario = ?");
-        // Adiciona os dados do usuario no lugar das interrogaÃ§Ãµes da instruÃ§Ã£o SQL
+        // Adiciona os dados do usuario no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$usuario->nome);
         $stmt->bindValue(2,$usuario->sobrenome);
         $stmt->bindValue(3,$usuario->email);
         $stmt->bindValue(4,$usuario->idPapel);
-        $stmt->bindValue(5,$usuario->ativo, PDO::PARAM_BOOL);
+        $stmt->bindValue(5,$usuario->ativo);
         $stmt->bindValue(6,$usuario->idUsuario);
 
         // execute the query
@@ -165,17 +165,27 @@
         return $stmt;
     }
     
-    function searchCol(){
-        $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE idPapel = ? ORDER BY nome");
+    public function searchCol(){
+        $stmt = $this->conn->prepare("SELECT idUsuario, nome, email FROM usuario WHERE idPapel = ? AND ativo = 'S' ORDER BY nome");
         $stmt->bindValue(1, 'C');
         $stmt->execute();
         
         return $stmt;
     }
     
-    function readAll($page, $from_record_num, $records_per_page){
+    function searchConAtivo($param){
+        $stmt = $this->conn->prepare("SELECT idUsuario, nome FROM usuario WHERE idPapel = ? AND idUsuario = ?");
+        $stmt->bindValue(1, 'C');
+        $stmt->bindValue(2, $param);
+        $stmt->execute();
+        
+        return $stmt;
+    }
+    
+    //Ler todos os usuario cadastrados, exceto administradores
+    function readUsu(){
         $stmt = $this->conn->prepare("SELECT * 
-                                FROM usuario ORDER BY nome ASC LIMIT {$from_record_num}, {$records_per_page}");
+                                FROM usuario WHERE idPapel <> 'A' ORDER BY nome");
 
         $stmt->execute();
         return $stmt;
@@ -197,7 +207,6 @@
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
         $usuario->nome = $row['nome'];
         $usuario->sobrenome = $row['sobrenome'];
         $usuario->email = $row['email'];
@@ -215,10 +224,10 @@
     }
     
     
-    //funÃ§Ã£o para validar login
+    //função para validar login
     function logar($usuario){
         try{
-            $stmt = $this->conn->prepare("SELECT idUsuario, nome, email, senha, salt, ativo FROM usuario WHERE email = ? LIMIT 1;");
+            $stmt = $this->conn->prepare("SELECT idUsuario, nome, email, senha, salt, idPapel, ativo FROM usuario WHERE email = ? LIMIT 1;");
             $stmt->bindValue(1, $usuario->email);
             $stmt->execute();
             
@@ -226,7 +235,7 @@
             
             if ($stmt->rowCount() == 1) {
                 $status = $rs->ativo;
-                if ($status == FALSE){
+                if ($status == 'N'){
                     $_SESSION['Mensagem'] = 'Usu&aacute;rio desativado!';
                 }else{
                     $password = hash('sha512', $usuario->senha . $rs->salt);
@@ -245,10 +254,11 @@
                             $rs->nome = preg_replace("/[^a-zA-Z0-9_\-]+/","",$rs->nome);
                             $_SESSION['usuario'] = $rs->nome;
                             $_SESSION['login_string'] = hash('sha512', $rs->senha.$user_browser);
+                            $_SESSION['perfil'] = $rs->idPapel;
                             //Logado com sucesso
                             return true;
                         }else{
-                            //Se a senha nÃ£o for correta salva a tentativa de login falha
+                            //Se a senha não for correta salva a tentativa de login falha
                             if($this->insertAttempts($rs->idUsuario)){
                                 $_SESSION['Mensagem'] = 'Senha inv&aacute;lida!';;                                                        
                             }else{
@@ -265,3 +275,4 @@
         }
     }
 }
+?>

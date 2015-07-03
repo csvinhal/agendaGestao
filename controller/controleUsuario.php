@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,7 +14,7 @@
 include_once '../config/functions.php';
 sec_session_start();
 
-$operacao = filter_input(INPUT_GET,'operacao', FILTER_SANITIZE_STRING);
+$operacao = filter_input(INPUT_GET,'operacao', FILTER_SANITIZE_URL);
 if(isset($operacao)){
     include_once '../model/usuarioDAO.class.php';
     include_once '../config/database.class.php';
@@ -55,7 +55,12 @@ if(isset($operacao)){
                 if(count($error) > 0){
                     $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/criar_usuario.php');
+                    
+                    if($_SESSION['perfil'] == 'A'){
+                        header('location:../view/administrador/view_usuarios.php');
+                    }else if($_SESSION['perfil'] == 'P'){
+                        header('location:../view/pmo/view_usuarios.php');
+                    }
                 }else{
                     //Instancia o objeto usuario
                     $usuario = new Usuario($db);
@@ -67,10 +72,10 @@ if(isset($operacao)){
                     $usuario->nome = $nome;
                     $usuario->sobrenome = $sobrenome;
                     $usuario->email = $email;
+                    
+                    //Verifica se o ativo esta checked
                     if($ativo == '1'){
                         $usuario->ativo = TRUE;
-                    }else{
-                        $usuario->ativo = FALSE;
                     }
                     
                     //Seta usuario salta com um valor randomico
@@ -86,7 +91,12 @@ if(isset($operacao)){
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/criar_usuario.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/view_usuarios.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/view_usuarios.php');
+                        }
                     }else{
                         $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
                         $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -94,7 +104,12 @@ if(isset($operacao)){
                         $error[] = "</div>";
                         $retorno = implode('', $error);
                         $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/criar_usuario.php');
+                        
+                        if($_SESSION['perfil'] == 'A'){
+                            header('location:../view/administrador/view_usuarios.php');
+                        }else if($_SESSION['perfil'] == 'P'){
+                            header('location:../view/pmo/view_usuarios.php');
+                        }
                     }
                 }
             }
@@ -116,7 +131,7 @@ if(isset($operacao)){
                 $conSenha = filter_input(INPUT_POST, 'conSenha', FILTER_SANITIZE_STRING);
                 $idPapel = filter_input(INPUT_POST,'idPapel', FILTER_SANITIZE_STRING);
                 $idUsuario = filter_input(INPUT_GET,'idUsuario', FILTER_SANITIZE_NUMBER_INT);
-                $ativo = filter_input(INPUT_POST,'ativo', FILTER_SANITIZE_NUMBER_INT);
+                $ativo = filter_input(INPUT_POST,'ativo', FILTER_SANITIZE_STRING);
                 
                 if(Validate::validarNome($nome) !== false){
                     $error[] = $_SESSION['Mensagem'];
@@ -134,7 +149,13 @@ if(isset($operacao)){
                 if(count($error) > 0){
                     $retorno = implode('', $error);
                     $_SESSION['Mensagem'] = $retorno;
-                    header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
+                    if($_SESSION['perfil'] == 'A'){
+                        header('Location:../view/administrador/update_usuario.php?idUsuario='.$idUsuario);
+                    }else if($_SESSION['perfil'] == 'P'){
+                        header('location:../view/pmo/update_usuario.php?idUsuario='.$idUsuario);
+                    }else if($_SESSION['perfil'] == 'C'){
+                        header('location:../view/consultores/update_usuario.php?idUsuario='.$idUsuario);
+                    }
                 }else{
                     //seta as propriedados do usuario
                     $usuario->nome = $nome;
@@ -142,12 +163,12 @@ if(isset($operacao)){
                     $usuario->email = $email;
                     $usuario->idPapel = $idPapel;
                     $usuario->idUsuario = $idUsuario;
+					$usuario->ativo = $ativo;
                     
+                    //Verifica se o ativo esta checked
                     if($ativo == '1'){
                         $usuario->ativo = TRUE;
-                    }else{
-                        $usuario->ativo = FALSE;
-                    }
+                    }                    
                     
                     //cria variavel array para armazenar retorno
                     $error = array();
@@ -162,7 +183,14 @@ if(isset($operacao)){
                             $error[] = "</div>";
                             $retorno = implode('', $error);
                             $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/view_usuarios.php');
+                            
+                            if($_SESSION['perfil'] == 'A'){
+                                header('location:../view/administrador/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'P'){
+                                header('location:../view/pmo/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'C'){
+                                header('location:../view/consultores/update_usuario.php?idUsuario='.$idUsuario);
+                            }
                         }else{
                             $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
                             $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -170,7 +198,14 @@ if(isset($operacao)){
                             $error[] = "</div>";
                             $retorno = implode('', $error);
                             $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
+                            
+                            if($_SESSION['perfil'] == 'A'){
+                                header('Location:../view/administrador/update_usuario.php?idUsuario='.$idUsuario);
+                            }else if($_SESSION['perfil'] == 'P'){
+                                header('location:../view/pmo/update_usuario.php?idUsuario='.$idUsuario);
+                            }else if($_SESSION['perfil'] == 'C'){
+                                header('location:../view/consultores/update_usuario.php?idUsuario='.$idUsuario);
+                            }
                         }
                     }else{
                         $usuarioDAO->readSalt($usuario);
@@ -182,7 +217,14 @@ if(isset($operacao)){
                             $error[] = "</div>";
                             $retorno = implode('', $error);
                             $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/view_usuarios.php');
+                            
+                            if($_SESSION['perfil'] == 'A'){
+                                header('location:../view/administrador/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'P'){
+                                header('location:../view/pmo/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'C'){
+                                header('location:../view/consultores/update_usuario.php?idUsuario='.$idUsuario);
+                            }
                         }else{
                             $error[] = "<div class=\"alert alert-danger alert-dismissable\">";
                             $error[] = "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
@@ -190,7 +232,14 @@ if(isset($operacao)){
                             $error[] = "</div>";
                             $retorno = implode('', $error);
                             $_SESSION['Mensagem'] = $retorno;
-                        header('location:../view/update_usuario.php?idUsuario='.$idUsuario);
+                            
+                            if($_SESSION['perfil'] == 'A'){
+                                header('location:../view/administrador/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'P'){
+                                header('location:../view/pmo/view_usuarios.php');
+                            }else if($_SESSION['perfil'] == 'C'){
+                                header('location:../view/consultores/update_usuario.php?idUsuario='.$idUsuario);
+                            }
                         }  
                     }
                 }
@@ -206,15 +255,24 @@ if(isset($operacao)){
                 $usuario = new Usuario($db);
                 
                 //Verifica se foram informados o usuario e a senha
-                if(!empty($_POST['login']) || !empty($_POST['senha'])){
+                if(!empty($_POST['txtLogin']) || !empty($_POST['txtSenha'])){
                         //seta as propriedados do usuario
                         $uusuario = new Usuario;
-                        $usuario->email = filter_input(INPUT_POST,'login', FILTER_SANITIZE_EMAIL);
-                        $usuario->senha = filter_input(INPUT_POST,'senha', FILTER_SANITIZE_STRING);
+                        $usuario->email = filter_input(INPUT_POST,'txtLogin', FILTER_SANITIZE_EMAIL);
+                        $usuario->senha = filter_input(INPUT_POST,'txtSenha', FILTER_SANITIZE_STRING);
                         $usuarioDAO = new usuarioDAO($db);
                         $res = $usuarioDAO->logar($usuario);
                         if($res === true){
-                            header('Location:../view/index.php');
+                            if($_SESSION['perfil'] == 'A'){
+                                header('Location:../view/administrador/index.php');
+                            }else if($_SESSION['perfil'] == 'P'){
+                                header('Location:../view/pmo/index.php');
+                            }else if($_SESSION['perfil'] == 'C'){
+                                header('Location:../view/consultores/index.php');
+                            }else if($_SESSION['perfil'] == 'E'){
+                                header('Location:../view/colaboradores/index.php');
+                            }
+                            
                         }else{
                             $_SESSION['Mensagem'] = $_SESSION['Mensagem'];
                             header('Location: ../index.php');
@@ -238,7 +296,8 @@ if(isset($_POST['operacao'])){
             //Instancia uma nova conexao
             $database = new Database();
             $db = $database->getConnection();
-
+            
+            include_once '../model/Usuario.class.php';
             //Instancia o objeto usuario
             $usuario = new Usuario($db);
 

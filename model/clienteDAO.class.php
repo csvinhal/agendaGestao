@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,18 +11,17 @@
  *
  * @author Cristiano
  */
-    include_once '../config/database.class.php';
-
+include_once 'Cliente.class.php';
     class clienteDAO {
     
-    // Cria um atributo chamado conexao para armazenar uma instÃ¢ncia da conexÃ£o
+    // Cria um atributo chamado conexao para armazenar uma instância da conexão
     private $conn;
 
-    /* Cria um mÃ©todo construtor para armazenar a instÃ¢ncia da conexÃ£o na
+    /* Cria um método construtor para armazenar a instância da conexão na
      * No atributo conexao
     */
     public function __construct($db){
-			// Armazena a instÃ¢ncia da conexao no atributo conexao
+			// Armazena a instância da conexao no atributo conexao
 			$this->conn = $db;
     }
     
@@ -30,7 +29,7 @@
 
         $stmt = $this->conn->prepare("INSERT INTO cliente(idCliente, razaosocial, nomefantasia, CNPJ, CEP, UF, cidade, bairro, logradouro, numero, observacao)
                                                                                     VALUES(null,?,?,?,?,?,?,?,?,?,?)");
-        // Adiciona os dados do cliente no lugar das interrogaÃ§Ãµes da instruÃ§Ã£o SQL
+        // Adiciona os dados do cliente no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$cliente->razaoSocial);
         $stmt->bindValue(2,$cliente->nomeFantasia);
         $stmt->bindValue(3,$cliente->CNPJ);
@@ -42,25 +41,29 @@
         $stmt->bindValue(9,$cliente->numero);
         $stmt->bindValue(10,$cliente->observacao);
         
-        // Executa a instruÃ§Ã£o SQL
+        // Executa a instrução SQL
         if($stmt->execute()){
             return true;
         }else{
             return false;
         } 
     }
+   
+    //Deleta o cliente
+    function delete($cliente){
+        $stmt = $this->conn->prepare("DELETE FROM cliente WHERE idCliente = ?");
+        $stmt->bindValue(1, $cliente->idCliente);
+
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     //lista todos os clientes
     function search(){
-        $stmt = $this->conn->prepare("SELECT * FROM cliente ORDER BY razaoSocial");
-
-        $stmt->execute();
-        return $stmt;
-    }
-    
-    function readAll($page, $from_record_num, $records_per_page){
-        $stmt = $this->conn->prepare("SELECT * 
-                                FROM cliente ORDER BY razaosocial ASC LIMIT {$from_record_num}, {$records_per_page}");
+        $stmt = $this->conn->prepare("SELECT * FROM cliente ORDER BY nomeFantasia");
 
         $stmt->execute();
         return $stmt;
@@ -76,18 +79,7 @@
         return $num;
     }
     
-    //Deleta o cliente
-    function delete($cliente){
-        $stmt = $this->conn->prepare("DELETE FROM cliente WHERE idCliente = ?");
-        $stmt->bindValue(1, $cliente->idCliente);
-
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
+    //Busca somente um cliente
     function readOne($cliente){
         $stmt = $this->conn->prepare("SELECT * FROM cliente WHERE idCliente = ? LIMIT 0,1");
         $stmt->bindValue(1, $cliente->idCliente);
@@ -109,7 +101,7 @@
     function update($cliente){
         $stmt = $this->conn->prepare("UPDATE cliente SET razaosocial = ?, nomefantasia = ?, 
                 CNPJ = ?, CEP = ?, UF = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ? WHERE idCliente = ?");
-        // Adiciona os dados do cliente no lugar das interrogaÃ§Ãµes da instruÃ§Ã£o SQL
+        // Adiciona os dados do cliente no lugar das interrogações da instrução SQL
         $stmt->bindValue(1,$cliente->razaoSocial);
         $stmt->bindValue(2,$cliente->nomeFantasia);
         $stmt->bindValue(3,$cliente->CNPJ);

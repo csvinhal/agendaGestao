@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,19 +11,17 @@
  *
  * @author Cristiano
  */
-
-include_once '../config/database.class.php';
 include_once 'Papel.class.php';
     
 class papelDAO {
-    // Cria um atributo chamado conexao para armazenar uma instÃ¢ncia da conexÃ£o
+    // Cria um atributo chamado conexao para armazenar uma instância da conexão
     private $stmt;
 
-    /* Cria um mÃ©todo construtor para armazenar a instÃ¢ncia da conexÃ£o na
+    /* Cria um método construtor para armazenar a instância da conexão na
      * No atributo conexao
     */
     public function __construct($db){
-			// Armazena a instÃ¢ncia da conexao no atributo conexao
+			// Armazena a instância da conexao no atributo conexao
 			$this->stmt = $db;
     }
     
@@ -36,11 +34,11 @@ class papelDAO {
         return $stmt;
     }
     
-    // usado para ler a descriÃ§Ã£o do papel pelo ID
+    // usado para ler a descrição do papel pelo ID
     function readName($param){
         $stmt = $this->stmt->prepare("SELECT descPapel FROM papel WHERE idPapel = ? limit 0,1"); 
         $stmt->bindValue(1, $param);
-            // Executa a instruÃ§Ã£o SQL
+            // Executa a instrução SQL
         $stmt->execute();
         $num = $stmt->rowCount();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
