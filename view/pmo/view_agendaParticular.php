@@ -157,12 +157,12 @@ $db = $database->getConnection();
                 //Instancia os objetos
                 $usuarioDAO = new usuarioDAO($db);
                 $stmtUsu = $usuarioDAO->searchConAtivo($idColaborador);
-                $alocacaoDAO = new alocacaoDAO($db);
-                $alocacao = new Alocacao($db);
-                $clienteDAO = new clienteDAO($db);
-                $cliente = new Cliente($db);
-                $tipoAlocacao = new TipoAlocacao($db);
-                $tipAlocDAO = new tipoAlocacaoDAO($db);
+                $objAlocacaoDAO = new alocacaoDAO($db);
+                $objClienteDAO = new clienteDAO($db);
+                $objTipoAlocDAO = new tipoAlocacaoDAO($db);
+                $objAlocacao = new Alocacao($db);
+                $objCliente = new Cliente($db);
+                $objTipoAlocacao = new TipoAlocacao($db);
 
                 //Preenche a primeira coluna com o nome dos colaboradores
                 echo "<tr>";        
@@ -181,38 +181,60 @@ $db = $database->getConnection();
                             }else{
                                 $dataAloc = date('Y-m-d', mktime(0,0,0,$month,$diasSem[$f],$year));
                             }
-                            if($stmtClient = $alocacaoDAO->searchMorning($dataAloc, $usuario->idUsuario)){
-                                while($alocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
-                                    $cliente->idCliente = $alocacao->idCliente;
-                                    $clienteDAO->readOne($cliente);
-                                    $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
-                                        if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '3')){
-                                            echo "<td class=\"text-center folga\">";
-                                        }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '4')){
-                                            echo "<td class=\"text-center feriado\">";
-                                        }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '5')){
-                                            echo "<td class=\"text-center ferias\">";
+                            if($stmtClient = $objAlocacaoDAO->searchMorning($dataAloc, $usuario->idUsuario)){
+                                if($stmtClient->rowcount() == 1){
+                                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                                    $objCliente->idCliente = $objAlocacao->idCliente;
+                                    $objClienteDAO->readOne($objCliente);
+                                    $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                                        if($objAlocacao->confirmado == 'S'){
+                                            $statusAloc = ''; 
+                                        }else if($objAlocacao->confirmado == 'N'){
+                                            $statusAloc = 'style="color:red"'; 
+                                        }
+
+                                        if($objAlocacao->idTipAloc == '3')
+                                        {
+                                            echo '<td class="text-center folga" '.$statusAloc.'><p>';
+                                        }else if($objAlocacao->idTipAloc == '4'){
+                                            echo '<td class="text-center feriado" '.$statusAloc.'><p>';
+                                        }else if ($objAlocacao->idTipAloc == '5'){
+                                            echo '<td class="text-center ferias" '.$statusAloc.'><p>';
+                                        }else if($objAlocacao->bloqueado == 'S'){
+                                            echo '<td class="text-center bloqueado"><p>';
                                         }else{
-                                            echo "<td class=\"text-center\">";
+                                            echo '<td class="text-center"><p '.$statusAloc.'>';
                                         }
-                                        //codifica a descrição da alocação para enviar via get
-                                        $descricao = urlencode($alocacao->desAlocacao);
-                                        $periodo = 'M';
-                                        //chama o modal e seta as variaveis via get
-                                        if($alocacao->confirmado == 'S'){
-                                            echo "<a class=\"confirmado\""; 
-                                        }else if($alocacao->confirmado == 'N'){
-                                            echo "<a class=\"nconfirmado\""; 
+
+                                        if($objAlocacao->idCliente == '152'){
+                                            echo $objTipoAlocacao->desAloc;
+                                        }else if($objAlocacao->bloqueado == 'S'){
+                                            echo "";
+                                        }else{
+                                            echo $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
                                         }
-                                        echo " href=\"#\">";
-                                            //imprime o cliente e o tipo de alocacao na tabela
-                                            if($alocacao->idCliente == '152'){
-                                                echo $tipoAlocacao->desAloc;
+                                        echo '</p></td>';
+                                    }
+                                }else{
+                                    echo '<td class="text-center">';
+                                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                                        $objCliente->idCliente = $objAlocacao->idCliente;
+                                        $objClienteDAO->readOne($objCliente);
+                                        $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                                        if($objAlocacao->confirmado == 'S'){
+                                            $statusAloc = ''; 
+                                        }else if($objAlocacao->confirmado == 'N'){
+                                            $statusAloc = 'style="color:red"'; 
+                                        }
+                                            echo '<div><p '.$statusAloc.'>';
+                                            if($objAlocacao->idCliente == '152'){
+                                                echo $objTipoAlocacao->desAloc;
                                             }else{
-                                                echo $cliente->nomeFantasia." - ".$tipoAlocacao->desAloc;
+                                                echo $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
                                             }
-                                        echo "</a>";
-                                        echo "</td>";
+                                            echo '</p></div>';
+                                    }
+                                    echo '</td>';
                                 }
                             }else{
                                 if(($semana == 0) && ($diasSem[$f] > 7)){
@@ -222,13 +244,13 @@ $db = $database->getConnection();
                                 }else{
                                     $dayOfWeek = date('l', mktime(0,0,0,$month, $diasSem[$f], $year));
                                 }
-                                //Imprime sabado e domingo em destaque
                                 if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
-                                    echo "<td class='text-center destaque'>&nbsp;</td>";
+                                    echo '<td class="text-center destaque">&nbsp;</td>';
                                 }else{
-                                    echo "<td class='text-center'>&nbsp;</td>";
+                                    echo '<td class="text-center">';
+                                    //chama o modal
+                                    echo '&nbsp;</td>';
                                 }
-
                             }
                             $f++;
                         }
@@ -245,51 +267,75 @@ $db = $database->getConnection();
                                 }else{
                                     $dataAloc = date('Y-m-d', mktime(0,0,0,$month,$diasSem[$f],$year));
                                 }
-                                if($stmtClient = $alocacaoDAO->searchAfternoon($dataAloc, $usuario->idUsuario)){
-                                    while($alocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
-                                    $cliente->idCliente = $alocacao->idCliente;
-                                    $clienteDAO->readOne($cliente);
-                                    $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
-                                        if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '3')){
-                                            echo "<td class=\"text-center folga\">";
-                                        }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '4')){
-                                            echo "<td class=\"text-center feriado\">";
-                                        }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '5')){
-                                            echo "<td class=\"text-center ferias\">";
-                                        }else{
-                                            echo "<td class=\"text-center\">";
-                                        }
-                                        //codifica a descrição da alocação para enviar via get
-                                        $descricao = urlencode($alocacao->desAlocacao);
-                                        $periodo = 'V';
-                                        //chama o modal e seta as variaveis via get
-                                        if($alocacao->confirmado == 'S'){
-                                            echo "<a class=\"confirmado\""; 
-                                        }else if($alocacao->confirmado == 'N'){
-                                            echo "<a class=\"nconfirmado\""; 
-                                        }
-                                        echo " href=\"#\">";
-                                            //imprime o cliente e o tipo de alocacao na tabela
-                                            if($alocacao->idCliente == '152'){
-                                                echo $tipoAlocacao->desAloc;
-                                            }else{
-                                                echo $cliente->nomeFantasia." - ".$tipoAlocacao->desAloc;
+                                if($stmtClient = $objAlocacaoDAO->searchAfternoon($dataAloc, $usuario->idUsuario)){
+                                    if($stmtClient->rowcount() == 1){
+                                        while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                                        $objCliente->idCliente = $objAlocacao->idCliente;
+                                        $objClienteDAO->readOne($objCliente);
+                                        $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                                            if($objAlocacao->confirmado == 'S'){
+                                                $statusAloc = ''; 
+                                            }else if($objAlocacao->confirmado == 'N'){
+                                                $statusAloc = 'style="color:red"'; 
                                             }
-                                        echo "</td>";
+
+                                            if($objAlocacao->idTipAloc == '3')
+                                            {
+                                                echo '<td class="text-center folga" '.$statusAloc.'><p>';
+                                            }else if($objAlocacao->idTipAloc == '4'){
+                                                echo '<td class="text-center feriado" '.$statusAloc.'><p>';
+                                            }else if ($objAlocacao->idTipAloc == '5'){
+                                                echo '<td class="text-center ferias" '.$statusAloc.'><p>';
+                                            }else if($objAlocacao->bloqueado == 'S'){
+                                                echo '<td class="text-center bloqueado"><p>';
+                                            }else{
+                                                echo '<td class="text-center"><p '.$statusAloc.'>';
+                                            }
+
+                                            if($objAlocacao->idCliente == '152'){
+                                                echo $objTipoAlocacao->desAloc;
+                                            }else if($objAlocacao->bloqueado == 'S'){
+                                                echo "";
+                                            }else{
+                                                echo $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                                            }
+                                            echo '</p></td>';
+                                        }
+                                    }else{
+                                        echo '<td class="text-center">';
+                                        while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                                            $objCliente->idCliente = $objAlocacao->idCliente;
+                                            $objClienteDAO->readOne($objCliente);
+                                            $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                                            if($objAlocacao->confirmado == 'S'){
+                                                $statusAloc = ''; 
+                                            }else if($objAlocacao->confirmado == 'N'){
+                                                $statusAloc = 'style="color:red"'; 
+                                            }
+                                                echo '<div><p '.$statusAloc.'>';
+                                                if($objAlocacao->idCliente == '152'){
+                                                    echo $objTipoAlocacao->desAloc;
+                                                }else{
+                                                    echo $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                                                }
+                                                echo '</p></div>';
+                                        }
+                                        echo '</td>';
                                     }
                                 }else{
-                                    if(($semana == 0) && ($diasSem[$f] > 7)){
+                                   if(($semana == 0) && ($diasSem[$f] > 7)){
                                         $dayOfWeek = date('l', mktime(0,0,0,$month_ant, $diasSem[$f], $year_ant));
                                     }else if(($semana == 4) && ($diasSem[$f] < 7)){
                                         $dayOfWeek = date('l', mktime(0,0,0,$month_prox, $diasSem[$f], $year_prox));
                                     }else{
                                         $dayOfWeek = date('l', mktime(0,0,0,$month, $diasSem[$f], $year));
                                     }
-                                    //Imprime sabado e domingo em destaque
                                     if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
-                                        echo "<td class='text-center destaque'>&nbsp;</td>";
+                                        echo '<td class="text-center destaque">&nbsp;</td>';
                                     }else{
-                                        echo "<td class='text-center'>&nbsp;</td>";
+                                        echo '<td class="text-center">';
+                                        //chama o modal
+                                        echo '&nbsp;</td>';
                                     }
                                 }
                                 $f++;

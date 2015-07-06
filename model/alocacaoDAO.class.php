@@ -519,25 +519,28 @@ public function geraHtmlImpressaoParticular(){
     <html lang="pt-br">
     <head>
         <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            .left-margin{margin:0 .5em 0 0;}
-            .right-button-margin{margin: 0 0 1em 0;overflow: hidden;}
-
-            html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed,figure, figcaption, footer, header, hgroup,menu, nav, output, ruby, section, summary,time, mark, audio, video {margin: 0;padding: 0;border: 0;font-size: 100%;vertical-align: baseline;font-family: Calibri;font-size: 11px;}
-            table {border-collapse: collapse;border-spacing: 0;font-family: Calibri;font-size: 11px;}
-            .colaboradores{font-weight: bold;}
-            .destaque{color: #ffffff;background-color: #9a9aff;}    
-            td.ferias{background-color: #ffffcc;}
-            td.feriado{background-color: #cccccc;}
-            td.folga{background-color: #ccffcc;}
-        </style>
-
-        <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
-        <script src="../js/jquery-1.11.2.min.js"></script>
-        <script src="../js/jquery-migrate-1.2.1.min.js"></script>
-        <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/impressao.css">
+    <script src="../js/jquery-1.11.2.min.js"></script>
+    <script src="../js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        .left-margin{margin:0 .5em 0 0;}
+        .right-button-margin{margin: 0 0 1em 0;overflow: hidden;}
+        
+        html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed,figure, figcaption, footer, header, hgroup,menu, nav, output, ruby, section, summary,time, mark, audio, video {margin: 0;padding: 0;border: 0;font-size: 100%;vertical-align: baseline;font-family: Calibri;font-size: 11px;}
+        table {border-collapse: collapse;border-spacing: 0;font-family: Calibri;font-size: 11px;}
+        .colaboradores{font-weight: bold;}
+        .destaque{color: #ffffff;background-color: #9a9aff;}
+        .bloqueado{color: #ffffff;background-color: #006699;}
+        .preenchimento{color: #000;background-color: #a9d4ff;}
+        td.ferias{background-color: #ffffcc;}
+        td.feriado{background-color: #cccccc;}
+        td.folga{background-color: #ccffcc;}
+    </style>
+    
     </head>
     <body>';
 
@@ -579,16 +582,18 @@ public function geraHtmlImpressaoParticular(){
         } 
     $html.= '</tr>';    
         //Instancia os objetos
-            $usuarioDAO = new usuarioDAO($db);
-            $usuario = new Usuario($db);
-            $usuario->idUsuario = $_GET['idColaborador'];
-            $usuarioDAO->readOne($usuario);
-            $alocacaoDAO = new alocacaoDAO($db);
-            $alocacao = new Alocacao($db);
-            $clienteDAO = new clienteDAO($db);
-            $cliente = new Cliente($db);
-            $tipoAlocacao = new TipoAlocacao($db);
-            $tipAlocDAO = new tipoAlocacaoDAO($db);
+        $usuarioDAO = new usuarioDAO($db);
+        $usuario = new Usuario($db);
+        $usuario->idUsuario = $_GET['idColaborador'];
+        $usuarioDAO->readOne($usuario);
+        $objAlocacaoDAO = new alocacaoDAO($db);
+        $objClienteDAO = new clienteDAO($db);
+        $objTipoAlocDAO = new tipoAlocacaoDAO($db);
+        $objAlocacao = new Alocacao($db);
+        $objCliente = new Cliente($db);
+        $objTipoAlocacao = new TipoAlocacao($db);
+        
+        $preenchimento = "";
             
     //Preenche a primeira coluna com o nome dos colaboradores
     $html.= '<tr><th rowspan="2" class="text-center colaboradores">'.$usuario->nome.'</th>';
@@ -603,27 +608,60 @@ public function geraHtmlImpressaoParticular(){
             }else{
                 $dataAloc = date('Y-m-d', mktime(0,0,0,$month,$diasSem[$f],$year));
             }
-            if($stmtClient = $alocacaoDAO->searchMorning($dataAloc, $usuario->idUsuario)){
-                while($alocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
-                    $cliente->idCliente = $alocacao->idCliente;
-                    $clienteDAO->readOne($cliente);
-                    $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
-                    if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '3')){
-                        $html.= "<td class=\"text-center folga\">";
-                    }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '4')){
-                        $html.= "<td class=\"text-center feriado\">";
-                    }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '5')){
-                        $html.= "<td class=\"text-center ferias\">";
-                    }else if($alocacao->confirmado == 'N'){
-                        $html.= "<td class=\"text-center\" style=\"color:red\">";
-                    }else{
-                        $html.= "<td class=\"text-center\">";
+            if($stmtClient = $objAlocacaoDAO->searchMorning($dataAloc, $usuario->idUsuario)){
+                if($stmtClient->rowcount() == 1){
+                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                    $objCliente->idCliente = $objAlocacao->idCliente;
+                    $objClienteDAO->readOne($objCliente);
+                    $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                        if($objAlocacao->confirmado == 'S'){
+                            $statusAloc = ''; 
+                        }else if($objAlocacao->confirmado == 'N'){
+                            $statusAloc = 'style="color:red"'; 
+                        }
+
+                        if($objAlocacao->idTipAloc == '3')
+                        {
+                            $html.= '<td class="text-center folga" '.$statusAloc.'><p>';
+                        }else if($objAlocacao->idTipAloc == '4'){
+                            $html.= '<td class="text-center feriado" '.$statusAloc.'><p>';
+                        }else if ($objAlocacao->idTipAloc == '5'){
+                            $html.= '<td class="text-center ferias" '.$statusAloc.'><p>';
+                        }else if($objAlocacao->bloqueado == 'S'){
+                            $html.= '<td class="text-center bloqueado"><p>';
+                        }else{
+                            $html.= '<td class="text-center '.$preenchimento.'"><p '.$statusAloc.'>';
+                        }
+
+                        if($objAlocacao->idCliente == '152'){
+                            $html.= $objTipoAlocacao->desAloc;
+                        }else if($objAlocacao->bloqueado == 'S'){
+                            $html.="";
+                        }else{
+                            $html.= $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                        }
+                        $html.= '</p></td>';
                     }
-                    if($alocacao->idCliente == '152'){
-                        $html.= $tipoAlocacao->desAloc."</td>";
-                    }else{
-                        $html.= $cliente->nomeFantasia." - ".$tipoAlocacao->desAloc."</a></td>";
+                }else{
+                    $html.= '<td class="text-center '.$preenchimento.'">';
+                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                        $objCliente->idCliente = $objAlocacao->idCliente;
+                        $objClienteDAO->readOne($objCliente);
+                        $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                        if($objAlocacao->confirmado == 'S'){
+                            $statusAloc = ''; 
+                        }else if($objAlocacao->confirmado == 'N'){
+                            $statusAloc = 'style="color:red"'; 
+                        }
+                            $html.= '<div><p '.$statusAloc.'>';
+                            if($objAlocacao->idCliente == '152'){
+                                $html.= $objTipoAlocacao->desAloc;
+                            }else{
+                                $html.= $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                            }
+                            $html.= '</p></div>';
                     }
+                    $html.= '</td>';
                 }
             }else{
                 if(($semana == 0) && ($diasSem[$f] > 7)){
@@ -633,65 +671,99 @@ public function geraHtmlImpressaoParticular(){
                 }else{
                     $dayOfWeek = date('l', mktime(0,0,0,$month, $diasSem[$f], $year));
                 }
-
-                //Imprime sabado e domingo em destaque
                 if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
-                    $html.='<td class="text-center destaque">&nbsp;</td>';
+                    $html.= '<td class="text-center destaque">&nbsp;</td>';
                 }else{
-                    $html.='<td class="text-center">&nbsp;</td>';
+                    $html.= '<td class="text-center '.$preenchimento.'">';
+                    //chama o modal
+                    $html.= '&nbsp;</td>';
                 }
             }
             $f++;
         }
     $html.='</tr><tr>';
         //Preenche a segunda rowspan com as alocações da tarde
-        $x = 0;
-        while($x <= 6){
-            if(($semana == 0) && ($diasSem[$x] > 7)){
-                $dataAloc = date('Y-m-d', mktime(0,0,0,$month_ant,$diasSem[$x],$year_ant));
-            }else if(($semana == 4) && ($diasSem[$x] < 7)){
-                $dataAloc = date('Y-m-d', mktime(0,0,0,$month_prox,$diasSem[$x],$year_prox));
+        $f = 0;
+        while($f <= 6){
+            if(($semana == 0) && ($diasSem[$f] > 7)){
+                $dataAloc = date('Y-m-d', mktime(0,0,0,$month_ant,$diasSem[$f],$year_ant));
+            }else if(($semana == 4) && ($diasSem[$f] < 7)){
+                $dataAloc = date('Y-m-d', mktime(0,0,0,$month_prox,$diasSem[$f],$year_prox));
             }else{
-                $dataAloc = date('Y-m-d', mktime(0,0,0,$month,$diasSem[$x],$year));
+                $dataAloc = date('Y-m-d', mktime(0,0,0,$month,$diasSem[$f],$year));
             }
-            if($stmtClient = $alocacaoDAO->searchAfternoon($dataAloc, $usuario->idUsuario)){
-                while($alocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
-                $cliente->idCliente = $alocacao->idCliente;
-                $clienteDAO->readOne($cliente);
-                $tipoAlocacao->desAloc = $tipAlocDAO->readName($alocacao->idTipAloc);
-                    if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '3')){
-                        $html.= "<td class=\"text-center folga\">";
-                    }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '4')){
-                        $html.= "<td class=\"text-center feriado\">";
-                    }else if(($alocacao->confirmado == 'S') && ($alocacao->idTipAloc == '5')){
-                        $html.= "<td class=\"text-center ferias\">";
-                    }else if($alocacao->confirmado == 'N'){
-                        $html.= "<td class=\"text-center\" style=\"color:red\">";
-                    }else{
-                        $html.= "<td class=\"text-center\">";
+            if($stmtClient = $objAlocacaoDAO->searchAfternoon($dataAloc, $usuario->idUsuario)){
+                if($stmtClient->rowcount() == 1){
+                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                    $objCliente->idCliente = $objAlocacao->idCliente;
+                    $objClienteDAO->readOne($objCliente);
+                    $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                        if($objAlocacao->confirmado == 'S'){
+                            $statusAloc = ''; 
+                        }else if($objAlocacao->confirmado == 'N'){
+                            $statusAloc = 'style="color:red"'; 
+                        }
+
+                        if($objAlocacao->idTipAloc == '3')
+                        {
+                            $html.= '<td class="text-center folga" '.$statusAloc.'><p>';
+                        }else if($objAlocacao->idTipAloc == '4'){
+                            $html.= '<td class="text-center feriado" '.$statusAloc.'><p>';
+                        }else if ($objAlocacao->idTipAloc == '5'){
+                            $html.= '<td class="text-center ferias" '.$statusAloc.'><p>';
+                        }else if($objAlocacao->bloqueado == 'S'){
+                            $html.= '<td class="text-center bloqueado"><p>';
+                        }else{
+                            $html.= '<td class="text-center '.$preenchimento.'"><p '.$statusAloc.'>';
+                        }
+
+                        if($objAlocacao->idCliente == '152'){
+                            $html.= $objTipoAlocacao->desAloc;
+                        }else if($objAlocacao->bloqueado == 'S'){
+                            $html.="";
+                        }else{
+                            $html.= $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                        }
+                        $html.= '</p></td>';
                     }
-                    if($alocacao->idCliente == '152'){
-                        $html.= $tipoAlocacao->desAloc."</td>";
-                    }else{
-                        $html.= $cliente->nomeFantasia." - ".$tipoAlocacao->desAloc."</a></td>";
+                }else{
+                    $html.= '<td class="text-center '.$preenchimento.'">';
+                    while($objAlocacao = $stmtClient->fetch(PDO::FETCH_OBJ)){
+                        $objCliente->idCliente = $objAlocacao->idCliente;
+                        $objClienteDAO->readOne($objCliente);
+                        $objTipoAlocacao->desAloc = $objTipoAlocDAO->readName($objAlocacao->idTipAloc);
+                        if($objAlocacao->confirmado == 'S'){
+                            $statusAloc = ''; 
+                        }else if($objAlocacao->confirmado == 'N'){
+                            $statusAloc = 'style="color:red"'; 
+                        }
+                            $html.= '<div><p '.$statusAloc.'>';
+                            if($objAlocacao->idCliente == '152'){
+                                $html.= $objTipoAlocacao->desAloc;
+                            }else{
+                                $html.= $objCliente->nomeFantasia.' - '.$objTipoAlocacao->desAloc;
+                            }
+                            $html.= '</p></div>';
                     }
+                    $html.= '</td>';
                 }
             }else{
-                if(($semana == 0) && ($diasSem[$x] > 7)){
-                    $dayOfWeek = date('l', mktime(0,0,0,$month_ant, $diasSem[$x], $year_ant));
-                }else if(($semana == 4) && ($diasSem[$x] < 7)){
-                    $dayOfWeek = date('l', mktime(0,0,0,$month_prox, $diasSem[$x], $year_prox));
+               if(($semana == 0) && ($diasSem[$f] > 7)){
+                    $dayOfWeek = date('l', mktime(0,0,0,$month_ant, $diasSem[$f], $year_ant));
+                }else if(($semana == 4) && ($diasSem[$f] < 7)){
+                    $dayOfWeek = date('l', mktime(0,0,0,$month_prox, $diasSem[$f], $year_prox));
                 }else{
-                    $dayOfWeek = date('l', mktime(0,0,0,$month, $diasSem[$x], $year));
+                    $dayOfWeek = date('l', mktime(0,0,0,$month, $diasSem[$f], $year));
                 }
-                //Imprime sabado e domingo em destaque
                 if(($dayOfWeek == 'Saturday') || ($dayOfWeek == 'Sunday')){
-                    $html.='<td class="text-center destaque">&nbsp;</td>';
+                    $html.= '<td class="text-center destaque">&nbsp;</td>';
                 }else{
-                    $html.='<td class="text-center"></td>';
+                    $html.= '<td class="text-center '.$preenchimento.'">';
+                    //chama o modal
+                    $html.= '&nbsp;</td>';
                 }
             }
-            $x++;
+            $f++;
         }
     $html.='</tr>';
     $html.= '</table>
@@ -1042,7 +1114,7 @@ $html.='</tr><tr>';
                         $dayExtensive = $agendaDAO->getDayExtensive($month, $diasSem[$f], $year);
                     }
                     $html.='<td class="text-center destaque"><strong>'.$dayExtensive.'</strong></td>';   
-                $f++;
+                    $f++;
                 } 
             $html.= '</tr>'; 
             $preenchimento = "destaque";
