@@ -48,7 +48,7 @@ if(isset($relatorio)){
                 $db = $database->getConnection();
                 
                 $idCliente = $_POST['idCliente'];
-                $idColaborador = filter_input(INPUT_POST,'idColaborador', FILTER_SANITIZE_NUMBER_INT);
+                $idColaborador = $_POST['idColaborador'];
                 $dataIniAloc = filter_input(INPUT_POST,'dataIniAlocacao', FILTER_SANITIZE_STRING);
                 $dataFimAloc = filter_input(INPUT_POST,'dataFimAlocacao', FILTER_SANITIZE_STRING);
                 
