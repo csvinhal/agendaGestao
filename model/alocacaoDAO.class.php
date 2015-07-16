@@ -399,6 +399,54 @@ function buscaAlocacaoConsultor($idColaborador, $dataIniAloc, $dataFimAloc){
     return $stmt;
 }
 
+function buscaAlocacaoCliente($idCliente, $idColaborador, $dataIniAloc, $dataFimAloc){
+    $stmt = $this->conn->prepare("SELECT idCliente, idColaborador, dataAlocacao, horaInicio, horaFim
+                                    FROM alocacao WHERE idCliente = ? AND idColaborador = ?
+                                    AND dataAlocacao >= ? AND dataAlocacao <= ?
+                                    ORDER BY idCliente, dataAlocacao");
+    $stmt->bindValue(1, $idCliente);
+    $stmt->bindValue(2, $idColaborador);
+    $stmt->bindValue(3, $dataIniAloc);
+    $stmt->bindValue(4, $dataFimAloc);
+    $stmt->execute();
+    return $stmt;
+}
+
+function buscaAlocacaoClientesWhereCol($idColaborador, $dataIniAloc, $dataFimAloc){
+    $stmt = $this->conn->prepare("SELECT idCliente, idColaborador, dataAlocacao, horaInicio, horaFim
+                                    FROM alocacao WHERE idColaborador = ?
+                                    AND dataAlocacao >= ? AND dataAlocacao <= ?
+                                    ORDER BY idCliente, dataAlocacao");
+    $stmt->bindValue(1, $idColaborador);
+    $stmt->bindValue(2, $dataIniAloc);
+    $stmt->bindValue(3, $dataFimAloc);
+    $stmt->execute();
+    return $stmt;
+}
+
+function buscaAlocacaoClienteWhereCli($idCliente, $dataIniAloc, $dataFimAloc){
+    $stmt = $this->conn->prepare("SELECT idCliente, idColaborador, dataAlocacao, horaInicio, horaFim
+                                    FROM alocacao WHERE idCliente = ?
+                                    AND dataAlocacao >= ? AND dataAlocacao <= ?
+                                    ORDER BY idCliente, dataAlocacao");
+    $stmt->bindValue(1, $idCliente);
+    $stmt->bindValue(2, $dataIniAloc);
+    $stmt->bindValue(3, $dataFimAloc);
+    $stmt->execute();
+    return $stmt;
+}
+
+function buscaAlocacaoClientes($dataIniAloc, $dataFimAloc){
+    $stmt = $this->conn->prepare("SELECT idCliente, idColaborador, dataAlocacao, horaInicio, horaFim 
+                                    FROM alocacao WHERE dataAlocacao >= ? 
+                                    AND dataAlocacao <= ?
+                                    ORDER BY idCliente, dataAlocacao");
+    $stmt->bindValue(1, $dataIniAloc);
+    $stmt->bindValue(2, $dataFimAloc);
+    $stmt->execute();
+    return $stmt;
+}
+
 function buscaAlocacao($objAlocacao){
     $stmt = $this->conn->prepare("SELECT * FROM alocacao
                                  WHERE dataAlocacao = ? AND horaInicio = ? AND 
@@ -1450,6 +1498,91 @@ function relatorioConsultorAlocacao($idColaborador, $dataIniAloc, $dataFimAloc){
         //Aqui nos damos inicio ao processo de exportacao (renderizar)
         $dompdf->render();
         $dompdf->stream('consultor_alocacao.pdf');
+    }catch(Exception $e){
+        echo "Ocorreu o seguinte erro: ".$e->getMessage();
+    }
+}
+
+function relatorioClienteAlocacao($idCliente, $idColaborador, $dataIniAloc, $dataFimAloc){
+    $html= '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+        <html lang="pt-Br">
+        <head>
+        <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1;" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .left-margin{margin:0 .5em 0 0;}
+            .right-button-margin{margin: 0 0 1em 0;overflow: hidden;}
+
+            html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed,figure, figcaption, footer, header, hgroup,menu, nav, output, ruby, section, summary,time, mark, audio, video {margin: 0;padding: 0;border: 0;font-size: 100%;vertical-align: baseline;font-family: Calibri;font-size: 11px;}
+            body{margin: 2cm 2cm 2cm 2cm}
+            table {border-collapse: collapse;border-spacing: 0;font-family: Calibri;font-size: 11px; width:100%;}
+            th,td {text-align:center;}
+            th{font-weight: bold;}
+        </style>
+    </head>
+    <body>';
+    include_once dirname(__FILE__).'/../config/database.class.php';
+    include_once dirname(__FILE__).'/../model/clienteDAO.class.php';
+    include_once dirname(__FILE__).'/../model/usuarioDAO.class.php';
+
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $objAlocacao = new Alocacao($db);
+    $objClienteDAO = new clienteDAO($db);
+    $objCliente = new cliente($db);
+    $objUsuarioDAO = new usuarioDAO($db);
+    $objUsuario = new Usuario($db);
+    
+    $html.= '<div class="container">
+            <table>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Data Alocação</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Fim</th>
+                    <th>Consultor</th>
+                </tr>';
+    if(($idCliente == 'T') && ($idColaborador != 'T'))
+    {
+        $stmt = $this->buscaAlocacaoClientesWhereCol($idColaborador, $dataIniAloc, $dataFimAloc);
+    }
+    else if(($idCliente != 'T') && ($idColaborador == 'T')){
+        $stmt = $this->buscaAlocacaoClienteWhereCli($idCliente, $dataIniAloc, $dataFimAloc);
+    }
+    else if(($idCliente == 'T') && ($idColaborador == 'T')){
+        $stmt = $this->buscaAlocacaoClientes($dataIniAloc, $dataFimAloc);
+    }else{
+        $stmt = $this->buscaAlocacaoCliente($idCliente, $idColaborador, $dataIniAloc, $dataFimAloc);
+    }
+
+    while ($objAlocacao = $stmt->fetch(PDO::FETCH_OBJ)){
+        $objAlocacao->dataAlocacao = $this->date_converterBR($objAlocacao->dataAlocacao);
+        $html.= '<tr>';
+            $objCliente->idCliente = $objAlocacao->idCliente;
+            $objClienteDAO->readOne($objCliente);
+            $html.= '<td>'.$objCliente->nomeFantasia.'</td>';
+            $html.= '<td>'.$objAlocacao->dataAlocacao.'</td>';
+            $html.= '<td>'.$objAlocacao->horaInicio.'</td>';
+            $html.= '<td>'.$objAlocacao->horaFim.'</td>';
+            $objUsuario->idUsuario = $objAlocacao->idColaborador;
+            $objUsuarioDAO->readOne($objUsuario);
+            $html.= '<td>'.$objUsuario->nome.'</td>';
+        $html.= '</tr>';
+    }
+    $html.= '</table></body></html>';
+    
+    require_once(dirname(__FILE__).'/../dompdf/dompdf_config.inc.php');
+    try{
+        //Instanciamos a class do dompdf para o processo
+        $dompdf= new DOMPDF();
+        $dompdf->set_paper('A4', 'retrait');
+        //Aqui n    os damos um LOAD (carregamos) todos os nossos dados e formatacoes para geracao do PDF
+        $dompdf->load_html($html);
+        //Aqui nos damos inicio ao processo de exportacao (renderizar)
+        $dompdf->render();
+        $dompdf->stream('cliente_alocacao.pdf');
     }catch(Exception $e){
         echo "Ocorreu o seguinte erro: ".$e->getMessage();
     }

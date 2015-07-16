@@ -64,7 +64,6 @@ include_once 'Cliente.class.php';
     //lista todos os clientes
     function search(){
         $stmt = $this->conn->prepare("SELECT * FROM cliente ORDER BY nomeFantasia");
-
         $stmt->execute();
         return $stmt;
     }

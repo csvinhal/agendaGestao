@@ -112,7 +112,8 @@ if(login_check() === true && $_SESSION['perfil'] == 'A'):
                 echo "<li class='dropdown'>";
                     echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Relat&oacute;rios<span class='caret'></span></a>";
                     echo "<ul class='dropdown-menu' role='menu'>";
-                        echo "<li><a href='consultor_Alocacao.php'>Consultor x Aloca&ccedil;&atilde;o</a></li>";
+                        echo "<li><a href='consultor_Alocacao.php'>Relat&oacute;rio Consultor x Aloca&ccedil;&atilde;o</a></li>";
+                        echo "<li><a href='rel_cliente_alocacao.php'>Relat&oacute;rio Cliente x Aloca&ccedil;&atilde;o</a></li>";
                     echo "</ul>";
                 echo "</li>";
                 echo "</ul>";

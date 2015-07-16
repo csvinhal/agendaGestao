@@ -18,7 +18,7 @@ if(isset($relatorio)){
     switch($relatorio){
         case 'consultorAlocacao':
             if($_POST){
-                //Instancia uma nova conexaos
+                //Instancia uma nova conexao
                 $database = new Database();
                 $db = $database->getConnection();
                 
@@ -40,6 +40,34 @@ if(isset($relatorio)){
                 }
                 $alocacaoDAO->relatorioConsultorAlocacao($idColaborador, $dataIniAloc, $dataFimAloc);
             }
+        Break;
+        case 'clienteAlocacao':
+            if($_POST){
+                //Instancia uma nova conexaos
+                $database = new Database();
+                $db = $database->getConnection();
+                
+                $idCliente = $_POST['idCliente'];
+                $idColaborador = filter_input(INPUT_POST,'idColaborador', FILTER_SANITIZE_NUMBER_INT);
+                $dataIniAloc = filter_input(INPUT_POST,'dataIniAlocacao', FILTER_SANITIZE_STRING);
+                $dataFimAloc = filter_input(INPUT_POST,'dataFimAlocacao', FILTER_SANITIZE_STRING);
+                
+                $alocacaoDAO = new alocacaoDAO($db);
+                if(empty($dataIniAloc)){
+                    $dataIniAloc = '1900-01-01';
+                }else{
+                    $dataIniAloc = $alocacaoDAO->date_converter($dataIniAloc);
+                }
+                
+                if(empty($dataFimAloc)){
+                    $dataFimAloc = '2099-12-31';
+                }else{
+                    $dataFimAloc = $alocacaoDAO->date_converter($dataFimAloc); 
+                }
+                $alocacaoDAO->relatorioClienteAlocacao($idCliente, $idColaborador, $dataIniAloc, $dataFimAloc);
+            }
+        Break;
+        
     }
 }
 
