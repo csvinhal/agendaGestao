@@ -9,6 +9,10 @@
 include_once '../config/functions.php';
 sec_session_start();
 
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
+
 $relatorio = filter_input(INPUT_GET,'relatorio', FILTER_SANITIZE_URL);
 
 if(isset($relatorio)){
