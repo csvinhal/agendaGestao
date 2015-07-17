@@ -75,7 +75,9 @@ if(isset($operacao)){
                     
                     //Verifica se o ativo esta checked
                     if($ativo == '1'){
-                        $usuario->ativo = TRUE;
+                        $usuario->ativo = "S";
+                    }else{
+                        $usuario->ativo = "N";
                     }
                     
                     //Seta usuario salta com um valor randomico
@@ -163,12 +165,7 @@ if(isset($operacao)){
                     $usuario->email = $email;
                     $usuario->idPapel = $idPapel;
                     $usuario->idUsuario = $idUsuario;
-					$usuario->ativo = $ativo;
-                    
-                    //Verifica se o ativo esta checked
-                    if($ativo == '1'){
-                        $usuario->ativo = TRUE;
-                    }                    
+                    $usuario->ativo = $ativo;                
                     
                     //cria variavel array para armazenar retorno
                     $error = array();
